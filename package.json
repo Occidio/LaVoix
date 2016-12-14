@@ -1,0 +1,25 @@
+{
+  "name": "lavoix",
+  "version": "1.0.0",
+  "description": "MPP Hack 2016",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Occidio/LaVoix.git"
+  },
+  "keywords": [
+    "lavoix"
+  ],
+  "author": "Alex Bamford",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Occidio/LaVoix/issues"
+  },
+  "homepage": "https://github.com/Occidio/LaVoix#readme",
+  "dependencies": {
+    "request": "^2.79.0"
+  }
+}
