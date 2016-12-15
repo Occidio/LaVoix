@@ -45,10 +45,18 @@ exports.handler = function (event, context) {
                             break;
                     }
                 }
+                else
+                {
+                    SinglePurchase();
+                }
                 break;
             case 'AMAZON.NoIntent':
                 if (attributes.readingHeadlines === true) {
+                    attributes.readingHeadlines = false;
                     GetHeadlines();
+                }
+                else {
+                    LaunchRequest();
                 }
                 break;
             default:
