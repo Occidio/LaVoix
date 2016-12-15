@@ -18,3 +18,4 @@ SinglePurchaseIntent purchase the article
 ServiceInfoIntent what's the status of my subscription
 ServiceInfoIntent how's my subscription
 ServiceInfoIntent check my subscription
+ServiceInfoIntent subscription status
