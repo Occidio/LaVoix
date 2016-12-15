@@ -41,6 +41,7 @@ exports.handler = function (event, context, callback) {
     alexa.execute();
 };
 
+<<<<<<< HEAD
 var PurchaseNews = function () {
     this.ConfigurationMiscCharge(function (isError, token) {
         this.emit(':tell', 'Call to misc done.');
@@ -54,6 +55,21 @@ var PurchaseNews = function () {
         }
     });
 }
+=======
+var PurchaseNews = function(){  
+        this.ConfigurationMiscCharge(function(isError, token){
+            this.emit(':tell','Call to misc done.');
+            if(!isError){           
+                this.AuthenticateAccount(function(isError, token){
+                this.emit(':tell','Call to authenticate done.');
+                    if(!isError){                  
+                        this.emit(':tell','DONE THE THING.');
+                    }
+                });
+            }
+        });
+};
+>>>>>>> e72a805dc3e674657ae685fc9acd360f2c2f4220
 
 var instructions = "I can read you the headlines, or get you service fuck.";
 
@@ -70,8 +86,25 @@ var handlers = {
         this.emit(':ask', headline, headlineReprompt);
     },
     'GetContentIntent': function () {
-        //Checks for entitlements and purchases is needed.
-
+        //Checks for entitlements and purchases if needed.
         PurchaseNews();
+    },
+    'SinglePurchaseIntent': function () {
+        //Do process payment.
+        this.emit(':tell','Single purchase intent recieved.');
+    },
+    'SubscriptionPurchaseIntent': function () {
+        //Do add Subscription.
+        this.emit(':tell','Subscription purchase intent recieved.');
+    },
+    'ServiceInfoIntent': function () {
+        //Get service info.
+        this.emit(':tell','Serivce info intent recieved.');
+    },
+    'PurchaseYesIntent': function () {
+        this.emit(':tell','Purchase Yes Intent recieved.');
+    },
+    'PurchaseNoIntent': function () {
+        this.emit(':tell','Purchase No Intent recieved.');
     },
 };
