@@ -157,8 +157,6 @@ function ProcessPaymentSuccess(context) {
     tell(context, 'Purchase successful. Check eHQ!');
 }
 
-function CheckAccountEntitlement()
-
 function tell(context, text) {
 
     var response = {
