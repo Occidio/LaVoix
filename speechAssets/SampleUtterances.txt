@@ -1,6 +1,6 @@
-GetNewsIntent give me the news
-GetNewsIntent give me the headlines
-GetNewsIntent what's the news
+GetHeadlinesIntent give me the news
+GetHeadlinesIntent give me the headlines
+GetHeadlinesIntent what's the news
 
 GetContentIntent read me the article
 GetContentIntent give me the article

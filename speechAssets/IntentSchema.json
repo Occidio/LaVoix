@@ -1,10 +1,7 @@
 {
   "intents": [
     {
-      "intent": "HelloWorldIntent"
-    },
-    {
-      "intent": "GetNewsIntent"
+      "intent": "GetHeadlinesIntent"
     },
     {
       "intent": "GetContentIntent"
