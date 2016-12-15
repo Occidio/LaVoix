@@ -2,37 +2,52 @@
 var EsuiteInterface = require('./esuiteInterface');
 var Alexa = require('alexa-sdk');
 
+var checkEntitlements = function () {
+    var esuiteInterface = new EsuiteInterface();
+    console.log('Starting: Config Miss Charge');
+    esuiteInterface.ConfigurationMiscCharge(function (isError, token) {
+        if (!isError) {
+            console.log('Token from Config Miss Charge: ' + token);
+            console.log('Starting: Authenticate Account');
+            esuiteInterface.AuthenticateAccount(token, function (isError, token, accountId) {
+                if (!isError) {
+                    console.log('Token from Authenticate Account: ' + token);
+                    console.log('Account Id from Authenticate Account: ' + accountId);
+                    console.log('Starting: Check Account Entitolement');
+                    esuiteInterface.CheckAccountEntitolement(token, accountId, function (isError, entitlements) {
+                        if (!isError) {
+                            console.log('Entitolement from Check Account Entitolement: ' + entitlements);
+                            if(entitlements) {
+                                entitlements.forEach(function(element) {
+                                    if(entitlement.identifier === "pamplemousse") {
+                                        console.log('found Pomplemousse');
+                                        return true;
+                                    }                                    
+                                }, this);
+                                console.log('There wasnt any entitlement called Pomplemousse, but there are '+entitlements.length+' entitlemnts');
+                                return false;
+                            }else{
+                                console.log('This user has no entitolements');
+                                return false;
+                            }
+                        } else {
+                            console.log('Error in Check Account Entitolement');
+                            console.log(entitlements);
+                        }
+                    });
+                } else {
+                    console.log('Error in Authenticate Account');
+                    console.log(token);
+                }
+            });
+        } else {
+            console.log('Error in Configuration Misc Charge');
+            console.log(token);
+        }
+    });
+};
 
-var esuiteInterface = new EsuiteInterface();
-console.log('Starting: Config Miss Charge');
-esuiteInterface.ConfigurationMiscCharge(function (isError, token) {
-    if (!isError) {
-        console.log('Token from Config Miss Charge: '+token);
-        console.log('Starting: Authenticate Account');
-        esuiteInterface.AuthenticateAccount(token, function (isError, token, accountId) {
-            if (!isError) {
-                console.log('Token from Authenticate Account: '+token);
-                console.log('Account Id from Authenticate Account: '+accountId);
-                console.log('Starting: Check Account Entitolement');
-                esuiteInterface.CheckAccountEntitolement(token, accountId, function (isError, entitlements) {
-                    if (!isError) {
-                        console.log('Entitolement from Check Account Entitolement: '+entitlements);
-                    }else{
-                        console.log('Error in Check Account Entitolement');
-                        console.log(entitlements);
-                    }
-                });
-            }else{
-                console.log('Error in Authenticate Account');
-                console.log(token);
-            }
-        });
-    }else{
-        console.log('Error in Configuration Misc Charge');
-        console.log(token);
-    }
-});
-
+checkEntitlements();
 
 exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -41,18 +56,8 @@ exports.handler = function (event, context, callback) {
     alexa.execute();
 };
 
-var PurchaseNews = function(){  
-        this.ConfigurationMiscCharge(function(isError, token){
-            this.emit(':tell','Call to misc done.');
-            if(!isError){           
-                this.AuthenticateAccount(function(isError, token){
-                this.emit(':tell','Call to authenticate done.');
-                    if(!isError){                  
-                        this.emit(':tell','DONE THE THING.');
-                    }
-                });
-            }
-        });
+var PurchaseNews = function () {
+    var hasEntitlement = checkEntitlements();
 };
 
 var instructions = "I can read you the headlines, or get you service fuck.";
@@ -75,20 +80,20 @@ var handlers = {
     },
     'SinglePurchaseIntent': function () {
         //Do process payment.
-        this.emit(':tell','Single purchase intent recieved.');
+        this.emit(':tell', 'Single purchase intent recieved.');
     },
     'SubscriptionPurchaseIntent': function () {
         //Do add Subscription.
-        this.emit(':tell','Subscription purchase intent recieved.');
+        this.emit(':tell', 'Subscription purchase intent recieved.');
     },
     'ServiceInfoIntent': function () {
         //Get service info.
-        this.emit(':tell','Serivce info intent recieved.');
+        this.emit(':tell', 'Serivce info intent recieved.');
     },
     'PurchaseYesIntent': function () {
-        this.emit(':tell','Purchase Yes Intent recieved.');
+        this.emit(':tell', 'Purchase Yes Intent recieved.');
     },
     'PurchaseNoIntent': function () {
-        this.emit(':tell','Purchase No Intent recieved.');
+        this.emit(':tell', 'Purchase No Intent recieved.');
     },
 };
