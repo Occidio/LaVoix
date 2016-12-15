@@ -20,7 +20,7 @@ var PurchaseNews = function(){
                 });
             }
         });
-}
+};
 
 var instructions = "I can read you the headlines, or get you service fuck.";
 
@@ -37,8 +37,25 @@ var handlers = {
         this.emit(':ask',headline, headlineReprompt);
     },
     'GetContentIntent': function () {
-        //Checks for entitlements and purchases is needed.
-
+        //Checks for entitlements and purchases if needed.
         PurchaseNews();
+    },
+    'SinglePurchaseIntent': function () {
+        //Do process payment.
+        this.emit(':tell','Single purchase intent recieved.');
+    },
+    'SubscriptionPurchaseIntent': function () {
+        //Do add Subscription.
+        this.emit(':tell','Subscription purchase intent recieved.');
+    },
+    'ServiceInfoIntent': function () {
+        //Get service info.
+        this.emit(':tell','Serivce info intent recieved.');
+    },
+    'PurchaseYesIntent': function () {
+        this.emit(':tell','Purchase Yes Intent recieved.');
+    },
+    'PurchaseNoIntent': function () {
+        this.emit(':tell','Purchase No Intent recieved.');
     },
 };
