@@ -11,7 +11,10 @@ exports.handler = function (event, context) {
     }else{
         switch (event.request.intent.name) {
             case 'GetHeadlinesIntent':
-                ConfigAdhoc(event, context);
+                ask(context, "Headlines are now.");
+                break;
+            case 'GetContentIntent':
+                ConfigAdhoc(event,context);
                 break;
             default:
                 tell(context, 'WTF you talking about. This is an intent.');
@@ -69,11 +72,6 @@ function tell(context, text) {
             type: "PlainText",
             text: text
         },
-        card: {
-            type: "Simple",
-            title: "System Data",
-            content: "text"
-        },
         shouldEndSession: true
     };
 
@@ -81,20 +79,19 @@ function tell(context, text) {
         response: response
     });
 
-}
+};
 
-function ask(text) {
+function ask(context, text) {
 
     var response = {
         outputSpeech: {
             type: "PlainText",
             text: text
         },
-        card: {
-            type: "Simple",
-            title: "System Data",
-            content: "text"
-        },
-        shouldEndSession: true
+        shouldEndSession: false
     };
-}
+    
+    context.succeed({
+        response: response
+    });
+};
