@@ -215,7 +215,7 @@ function ProcessPayment(sessionToken) {
         }
     };
 
-    var post_data = '{"paymentMethod": "CreditCard","cvv": "123","orderItems": [{"entitlements": [{"identifier": "Pamplemousse Entitlement","startDate": "2016-12-15T21:19:12.4607675Z","expiryDate": "2018-12-16T21:19:12.4607675Z"}]}]}';
+    var post_data = '{"paymentMethod": "CreditCard","cvv": "123","orderItems": [{"description": "Pumplemousse To the Resque","entitlements": [{"identifier": "Pamplemousse Entitlement","startDate": "2016-12-15T21:19:12.4607675Z","expiryDate": "2018-12-16T21:19:12.4607675Z"}]}]}';
     callback = function (response) {
         var str = '';
 
