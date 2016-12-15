@@ -1,5 +1,5 @@
 exports.handler = function (event, context) {
-    if(event.request.type !== "IntentRequest"){
+    if (event.request.type !== "IntentRequest") {
         switch (event.request.type) {
             case 'LaunchRequest':
                 tell(context, "Welcome to post test.");
@@ -8,7 +8,7 @@ exports.handler = function (event, context) {
                 tell(context, 'WTF you talking about. This is not an intent.');
                 break;
         }
-    }else{
+    } else {
         switch (event.request.intent.name) {
             case 'GetHeadlinesIntent':
                 ask(context, "Headlines are now.");
@@ -20,7 +20,7 @@ exports.handler = function (event, context) {
                 tell(context, 'WTF you talking about. This is an intent.');
                 break;
         }
-    }  
+    }
 };
 
 function ConfigAdhoc(context) {
@@ -79,7 +79,7 @@ function AuthenticateAccount(context, sessionToken) {
             'Origin': 'https://skinsuat.mppglobal.com',
             'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
             'X-Version': '1.0.0',
-            'X-SessionId': ''+sessionToken
+            'X-SessionId': '' + sessionToken
         }
     };
 
@@ -107,7 +107,7 @@ function AuthenticateAccount(context, sessionToken) {
     post_req.end();
 }
 
-function AuthenticateSuccess(context, sessionToken, accountId) {
+function AuthenticateSuccess(context, sessionToken) {
     //tell(context, 'The account id is: '+accountId+' and the session is: '+sessionToken);
     ProcessPayment(context, sessionToken);
 }
@@ -125,7 +125,7 @@ function ProcessPayment(context, sessionToken) {
             'Origin': 'https://skinsuat.mppglobal.com',
             'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
             'X-Version': '1.0.0',
-            'X-SessionId': ''+sessionToken
+            'X-SessionId': '' + sessionToken
         }
     };
 
@@ -154,7 +154,95 @@ function ProcessPayment(context, sessionToken) {
 }
 
 function ProcessPaymentSuccess(context) {
-    tell(context, 'Purchase successful. Check eHQ!');
+    tell(context, 'Purchase successful. Check e.H.Q.!');
+}
+
+function verifySession(context, sessionToken) {
+    var https = require('https');
+    // An object of options to indicate where to post to
+    var post_options = {
+        host: 'uat.mppglobal.com',
+        port: '443',
+        path: '/api/sessions',
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'https://skinsuat.mppglobal.com',
+            'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
+            'X-Version': '1.0.0',
+            'X-SessionId': '' + sessionToken
+        }
+    };
+
+    callback = function (response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            var data = JSON.parse(str);
+            var accountId = data.accountId;
+            CheckAccountEntitlement(context, sessionToken, accountId);
+        });
+    };
+
+    // Set up the request
+    var post_req = https.request(post_options, callback);
+
+    // post the data
+    post_req.write(post_data);
+    post_req.end();
+}
+
+function CheckAccountEntitlement(context, sessionToken, accountId) {
+    var https = require('https');
+
+    // An object of options to indicate where to post to
+    var post_options = {
+        host: 'uat.mppglobal.com',
+        port: '443',
+        path: '/api/accounts/' + accountId + '/entitlements',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'https://skinsuat.mppglobal.com',
+            'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
+            'X-Version': '1.0.0',
+            'X-SessionId': '' + sessionToken
+        }
+    };
+
+    callback = function (response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            var data = JSON.parse(str);
+            var entitlements = data.entitlements;
+            CheckEntitlementSuccess(context, entitlements);
+        });
+    };
+
+    // Set up the request
+    var post_req = https.request(post_options, callback);
+
+    // post the data
+    post_req.write(post_data);
+    post_req.end();
+}
+
+function CheckEntitlementSuccess(context, entitlements) {
+    var count = entitlements.length;
+    if (count === 0) {
+        tell(context, 'You do not have any entitlements');
+    } else {
+        tell(context, 'You have' + count + 'entitlements');
+    }
 }
 
 function tell(context, text) {
@@ -181,7 +269,7 @@ function ask(context, text) {
         },
         shouldEndSession: false
     };
-    
+
     context.succeed({
         response: response
     });
