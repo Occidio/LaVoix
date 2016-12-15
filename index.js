@@ -108,7 +108,53 @@ function AuthenticateAccount(context, sessionToken) {
 }
 
 function AuthenticateSuccess(context, sessionToken, accountId) {
-    tell(context, 'The account id is: '+accountId+' and the session is: '+sessionToken);
+    //tell(context, 'The account id is: '+accountId+' and the session is: '+sessionToken);
+    ProcessPayment(context, sessionToken);
+}
+
+function ProcessPayment(context, sessionToken) {
+    var https = require('https');
+    // An object of options to indicate where to post to
+    var post_options = {
+        host: 'uat.mppglobal.com',
+        port: '443',
+        path: '/api/workflows/purchases/adhoc',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'https://skinsuat.mppglobal.com',
+            'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
+            'X-Version': '1.0.0',
+            'X-SessionId': ''+sessionToken
+        }
+    };
+
+    var post_data = '{"paymentMethod": "CreditCard","cvv": "123","voucherCode": "GPM6A374P3"}';
+    callback = function (response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            var data = JSON.parse(str);
+            var sessionToken = data.sessionToken;
+            var accountId = data.accountId;
+            ProcessPaymentSuccess();
+        });
+    };
+
+    // Set up the request
+    var post_req = https.request(post_options, callback);
+
+    // post the data
+    post_req.write(post_data);
+    post_req.end();
+}
+
+function ProcessPaymentSuccess() {
+    tell(context, 'Purchase successful. Check eHQ!');
 }
 
 function tell(context, text) {
