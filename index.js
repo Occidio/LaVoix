@@ -1,5 +1,4 @@
 var EsuiteInterface = require('./esuiteInterface');
-// var http = require('http');
 var Alexa = require('alexa-sdk');
 
 exports.handler = function(event, context, callback){
@@ -9,37 +8,37 @@ exports.handler = function(event, context, callback){
     alexa.execute();
 };
 
+var PurchaseNews = function(){  
+        this.ConfigurationMiscCharge(function(isError, token){
+            this.emit(':tell','Call to misc done.');
+            if(!isError){           
+                this.AuthenticateAccount(function(isError, token){
+                this.emit(':tell','Call to authenticate done.');
+                    if(!isError){                  
+                        this.emit(':tell','DONE THE THING.');
+                    }
+                });
+            }
+        });
+}
+
+var instructions = "I can read you the headlines, or get you service fuck.";
+
+var headline = "Headline one; Do you care?";
+var headlineReprompt = "Would you like to hear the whole story?";
+
 var handlers = {
     'LaunchRequest': function(){
-        this.emit('HelloWorldIntent');
+        //Gives instruction on how to use app.
+        this.emit(':tell',instructions);
     },
-    'HelloWorldIntent': function () {
-        this.emit(':tell', 'Hello World!');
-    }
+    'GetHeadlinesIntent': function () {
+        //Read headlines one by one.
+        this.emit(':ask',headline, headlineReprompt);
+    },
+    'GetContentIntent': function () {
+        //Checks for entitlements and purchases is needed.
+
+        PurchaseNews();
+    },
 };
-
-// var authCallback = function(isError, response){
-//     if(isError){
-// 			console.log('ERROR:' + response);
-//   }else{
-//       console.log('authCallback Token:' + response);
-//   }
-// }
-
-// var miscCallback = function(isError, response){
-//   if(isError){
-// 			console.log('ERROR:' + response);
-//   }else{
-//       console.log('miscCallback Token:' + response);
-      
-//       var esuiteInterface = new EsuiteInterface();
-//       esuiteInterface.AuthenticateAccount(response, authCallback);
-//   }
-// }
-
-// var server = http.createServer(function(req, res) {
-//   var esuiteInterface = new EsuiteInterface();
-//   res.writeHead(200);
-//   esuiteInterface.ConfigurationMiscCharge(miscCallback);
-// });
-// server.listen(8080);
