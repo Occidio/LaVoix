@@ -22,15 +22,13 @@ var PurchaseNews = function(){
         });
 };
 
-var instructions = "I can read you the headlines, or get you service fuck.";
-
 var headline = "Headline one; Do you care?";
 var headlineReprompt = "Would you like to hear the whole story?";
 
 var handlers = {
     'LaunchRequest': function(){
         //Gives instruction on how to use app.
-        this.emit(':tell',instructions);
+        this.emit(':ask', "I can read you the headlines or give you the status of your subscription.", "Which one would you like?");
     },
     'GetHeadlinesIntent': function () {
         //Read headlines one by one.
@@ -38,24 +36,43 @@ var handlers = {
     },
     'GetContentIntent': function () {
         //Checks for entitlements and purchases if needed.
-        PurchaseNews();
+        // PurchaseNews();
+        this.emit(':ask','You do not have access to this content. You can make a single purchase for the item or purchase a subscription.', 'What would you like to do?');
     },
-    'SinglePurchaseIntent': function () {
+    'SinglePurchaseIntent': function (intent, session, response) {
         //Do process payment.
-        this.emit(':tell','Single purchase intent recieved.');
+        this.emit(':tell','Single purchase intent received.');
+
+        session.attributes.purchaseType = "singlePurchase";
+
+        this.emit(':ask','Payment failed.', 'Would you like to try again?');
     },
-    'SubscriptionPurchaseIntent': function () {
+    'SubscriptionPurchaseIntent': function (intent, session, response) {
         //Do add Subscription.
-        this.emit(':tell','Subscription purchase intent recieved.');
+        this.emit(':tell','Subscription purchase intent received.');
+
+        session.attributes.purchaseType = "subscription";
+
+        this.emit(':ask','Payment failed.', 'Would you like to try again?');
     },
     'ServiceInfoIntent': function () {
         //Get service info.
-        this.emit(':tell','Serivce info intent recieved.');
+        this.emit(':tell','Serivce info intent received.');
     },
-    'PurchaseYesIntent': function () {
-        this.emit(':tell','Purchase Yes Intent recieved.');
+    'AMAZON.YesIntent': function (intent, session, response) {
+        if(session.attributes.purchaseType == "singlePurchase")
+        {
+            this.emit(':tell','Purchased single item.');
+            //do single purchase
+        }
+        else if(session.attributes.purchaseType == "subscription")
+        {
+            this.emit(':tell','Purchased subscription.');
+            //do subscription purchase
+        }
     },
-    'PurchaseNoIntent': function () {
-        this.emit(':tell','Purchase No Intent recieved.');
-    },
+    'AMAZON.NoIntent': function (intent, session, response) {
+        session.attributes.purchaseType = "";
+        this.emit('LaunchRequest');
+    }
 };

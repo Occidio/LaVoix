@@ -10,6 +10,7 @@ SubscriptionPurchaseIntent subscription
 SubscriptionPurchaseIntent purchase subscription
 SubscriptionPurchaseIntent purchase a subscription
 
+SinglePurchaseIntent make single purchase
 SinglePurchaseIntent article
 SinglePurchaseIntent purchase article
 SinglePurchaseIntent purchase the article
