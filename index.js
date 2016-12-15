@@ -288,7 +288,7 @@ function CheckAccountEntitlement(sessionToken, accountId) {
         host: 'uat.mppglobal.com',
         port: '443',
         path: '/api/accounts/' + accountId + '/entitlements',
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Origin': 'https://skinsuat.mppglobal.com',
