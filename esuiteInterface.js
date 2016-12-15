@@ -80,7 +80,7 @@ esuiteInterfacePrototype.AuthenticateAccount = function (session, callback) {
 	});
 };
 
-esuiteInterfacePrototype.CheckAccountEntitolement = function (session, accountId, callback) {
+esuiteInterfacePrototype.CheckAccountEntitlement = function (session, accountId, callback) {
 	// Set the headers
 	let headers = {
 		'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ esuiteInterfacePrototype.CheckAccountEntitolement = function (session, accountId
 
 	// Configure the request
 	let options = {
-		url: 'https://uat.mppglobal.com/api/accounts/'+accountId+'/entitlements',
+		url: 'https://uat.mppglobal.com/api/accounts/' + accountId + '/entitlements',
 		method: 'GET',
 		headers: headers
 	};
@@ -106,5 +106,35 @@ esuiteInterfacePrototype.CheckAccountEntitolement = function (session, accountId
 		callback(false, entitlements);
 	});
 };
+
+esuiteInterfacePrototype.ProcessPayment = function (session, callback) {
+	// Set the headers
+	let headers = {
+		'Content-Type': 'application/json',
+		'X-Version': '1.0.0',
+		'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
+		'Origin': 'https://skinsuat.mppglobal.com',
+		'X-SessionId': session
+	};
+
+	// Configure the request
+	let options = {
+		url: 'https://uat.mppglobal.com/api/workflows/purchases/adhoc',
+		method: 'POST',
+		headers: headers,
+		json: {
+			"paymentMethod": "CreditCard",
+			"cvv": "123"
+		}
+	};
+
+	request(options, function (error, response, body) {
+		if (error) {
+			callback(true, response);
+			return;
+		}
+		callback(false,body);
+	});
+}
 
 module.exports = esuiteInterface;
