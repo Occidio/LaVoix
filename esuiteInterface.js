@@ -8,7 +8,7 @@ function esuiteInterface() {};
 esuiteInterfacePrototype.ConfigurationMiscCharge = function (callback) {
 
 	// Set the headers
-	let headers = {
+	var headers = {
 		'Content-Type': 'application/json',
 		'X-Version': '1.0.0',
 		'X-ClientId': '433',
@@ -17,11 +17,11 @@ esuiteInterfacePrototype.ConfigurationMiscCharge = function (callback) {
 	};
 
 	// Configure the request
-	let options = {
-		url: 'https://uat.mppglobal.com/api/workflows/configurations/adhoc',
-		method: 'POST',
-		headers: headers,
-		json: {
+	var options = {
+		'url': 'https://uat.mppglobal.com/api/workflows/configurations/adhoc',
+		'method': 'POST',
+		'headers': headers,
+		'json': {
 			"orderItems": [{
 				"description": "Grapegruit purchase",
 				"priceBreakDown": {
@@ -37,20 +37,21 @@ esuiteInterfacePrototype.ConfigurationMiscCharge = function (callback) {
 			}
 		}
 	};
+	callback(false, 'sessionToken');
 
-	request(options, function (error, response, body) {
-		if (error) {
-			callback(true, response);
-			return;
-		}
-		var sessionToken = body.sessionToken;
-		callback(false, sessionToken);
-	})
+	// request(options, function (error, response, body) {
+	// 	if (error) {
+	// 		callback(true, response);
+	// 		return;
+	// 	}
+	// 	var sessionToken = body.sessionToken;
+	// 	callback(false, sessionToken);
+	// })
 };
 
 esuiteInterfacePrototype.AuthenticateAccount = function (session, callback) {
 	// Set the headers
-	let headers = {
+	var headers = {
 		'Content-Type': 'application/json',
 		'X-Version': '1.0.0',
 		'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
@@ -59,7 +60,7 @@ esuiteInterfacePrototype.AuthenticateAccount = function (session, callback) {
 	};
 
 	// Configure the request
-	let options = {
+	var options = {
 		url: 'https://uat.mppglobal.com/api/accounts/authenticate',
 		method: 'POST',
 		headers: headers,
@@ -74,15 +75,15 @@ esuiteInterfacePrototype.AuthenticateAccount = function (session, callback) {
 			callback(true, response);
 			return;
 		}
-		let sessionToken = body.sessionToken;
-		let accountId = body.accountId;
+		var sessionToken = body.sessionToken;
+		var accountId = body.accountId;
 		callback(false, sessionToken, accountId);
 	});
 };
 
 esuiteInterfacePrototype.CheckAccountEntitlement = function (session, accountId, callback) {
 	// Set the headers
-	let headers = {
+	var headers = {
 		'Content-Type': 'application/json',
 		'X-Version': '1.0.0',
 		'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
@@ -91,7 +92,7 @@ esuiteInterfacePrototype.CheckAccountEntitlement = function (session, accountId,
 	};
 
 	// Configure the request
-	let options = {
+	var options = {
 		url: 'https://uat.mppglobal.com/api/accounts/' + accountId + '/entitlements',
 		method: 'GET',
 		headers: headers
@@ -102,14 +103,14 @@ esuiteInterfacePrototype.CheckAccountEntitlement = function (session, accountId,
 			callback(true, response);
 			return;
 		}
-		let entitlements = body.entitlements;
+		var entitlements = body.entitlements;
 		callback(false, entitlements);
 	});
 };
 
 esuiteInterfacePrototype.ProcessPayment = function (session, callback) {
 	// Set the headers
-	let headers = {
+	var headers = {
 		'Content-Type': 'application/json',
 		'X-Version': '1.0.0',
 		'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
@@ -118,7 +119,7 @@ esuiteInterfacePrototype.ProcessPayment = function (session, callback) {
 	};
 
 	// Configure the request
-	let options = {
+	var options = {
 		url: 'https://uat.mppglobal.com/api/workflows/purchases/adhoc',
 		method: 'POST',
 		headers: headers,
