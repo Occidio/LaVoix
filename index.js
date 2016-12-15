@@ -324,7 +324,7 @@ function CheckEntitlementSuccess(entitlements) {
         if (count === 0) {
             ask('You do not have any entitlements, would you like to buy this?');
         } else {
-            ask('You have' + count + 'entitlements');
+            (count > 1)? ask('You have ' + count + ' entitlements') : ask('You have ' + count + ' entitlement');
         }
     } else {
         ask('You do not have any entitlements, would you like to buy this?');
