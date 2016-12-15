@@ -1,8 +1,11 @@
+var NUMBER_OF_HEADLINES = 2;
+this.attributes["headline"] = 0;
+
 exports.handler = function (event, context) {
     if (event.request.type !== "IntentRequest") {
         switch (event.request.type) {
             case 'LaunchRequest':
-                tell(context, "Welcome to post test.");
+                LaunchRequest();
                 break;
             default:
                 tell(context, 'WTF you talking about. This is not an intent.');
@@ -11,10 +14,39 @@ exports.handler = function (event, context) {
     } else {
         switch (event.request.intent.name) {
             case 'GetHeadlinesIntent':
-                ask(context, "Headlines are now.");
+                GetHeadlines();
                 break;
             case 'GetContentIntent':
-                ConfigAdhoc(context);
+                GetContent();
+                break;
+            case 'SinglePurchaseIntent':
+                SinglePurchase();
+                break;
+            case 'SubscriptionPurchaseIntent':
+                SubscriptionPurchase();
+                break;
+            case 'AMAZON.YesIntent':
+                if(this.attributes["readingHeadlines"] == true)
+                {
+                    this.attributes["readingHeadlines"] == false;
+                    switch(this.attributes["headline"]){
+                        case 1:
+                            GetContent();
+                            break;
+                        case 2:
+                            GetContent();
+                            break;
+                        default:
+                            LaunchRequest();
+                            break;
+                    }
+                }
+                break;
+            case 'AMAZON.NoIntent':
+                if(this.attributes["readingHeadlines"] == true)
+                {
+                    GetHeadlines();
+                }
                 break;
             default:
                 tell(context, 'WTF you talking about. This is an intent.');
@@ -22,6 +54,46 @@ exports.handler = function (event, context) {
         }
     }
 };
+
+function LaunchRequest(){
+    ask(context, "I can give you the headlines or give you the status of your subscription; Which one would you like?");
+}
+
+function GetHeadlines(){
+    this.attributes["readingHeadlines"] = true;
+    if(this.attributes["headline"] == NUMBER_OF_HEADLINES)
+    {
+        this.attributes["headline"] = 0;
+    }
+    else
+    {
+        this.attributes["headline"] = this.attributes["headline"] + 1;
+    }
+    var more = "Would you like to know more?"
+    switch(this.attributes["headline"]){
+        case 1:
+            ask(context, "Alexa integration proof of concept wins MPP Global hack; " + more);
+            break;
+        case 2:
+            ask(context, "MPP goes global; " + more);
+            break;
+        default:
+            ask(context, "There are no more headlines; Would you like to start again?");
+            break;
+    }
+}
+
+function SinglePurchase(){
+    
+}
+
+function SubscriptionPurchase(){
+    
+}
+
+function GetContent(){
+    ConfigAdhoc(context);
+}
 
 function ConfigAdhoc(context) {
     var https = require('https');
