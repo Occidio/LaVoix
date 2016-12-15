@@ -78,7 +78,6 @@ function tell(context, text) {
     context.succeed({
         response: response
     });
-
 };
 
 function ask(context, text) {
