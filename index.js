@@ -1,7 +1,12 @@
 var NUMBER_OF_HEADLINES = 2;
-this.attributes["headline"] = 0;
+var attributes = {
+    readingHeadlines: false,
+    headline: 0,
+    context: null
+};
 
 exports.handler = function (event, context) {
+    attributes.context = context;
     if(event.request.type !== "IntentRequest"){
         switch (event.request.type) {
             case 'LaunchRequest':
@@ -26,10 +31,10 @@ exports.handler = function (event, context) {
                 SubscriptionPurchase();
                 break;
             case 'AMAZON.YesIntent':
-                if(this.attributes["readingHeadlines"] == true)
+                if(attributes.readingHeadlines === true)
                 {
-                    this.attributes["readingHeadlines"] == false;
-                    switch(this.attributes["headline"]){
+                    attributes.readingHeadlines = false;
+                    switch(attributes.headline){
                         case 1:
                             GetContent();
                             break;
@@ -43,7 +48,7 @@ exports.handler = function (event, context) {
                 }
                 break;
             case 'AMAZON.NoIntent':
-                if(this.attributes["readingHeadlines"] == true)
+                if(attributes.readingHeadlines === true)
                 {
                     GetHeadlines();
                 }
@@ -56,29 +61,29 @@ exports.handler = function (event, context) {
 };
 
 function LaunchRequest(){
-    ask(context, "I can give you the headlines or give you the status of your subscription; Which one would you like?");
+    ask(attributes.context, "I can give you the headlines or give you the status of your subscription; Which one would you like?");
 }
 
 function GetHeadlines(){
-    this.attributes["readingHeadlines"] = true;
-    if(this.attributes["headline"] == NUMBER_OF_HEADLINES)
+    attributes.readingHeadlines = true;
+    if(attributes.headline == NUMBER_OF_HEADLINES)
     {
-        this.attributes["headline"] = 0;
+        attributes.headline = 0;
     }
     else
     {
-        this.attributes["headline"] = this.attributes["headline"] + 1;
+        attributes.headline = attributes.headline + 1;
     }
     var more = "Would you like to know more?"
-    switch(this.attributes["headline"]){
+    switch(attributes.headline){
         case 1:
-            ask(context, "Alexa integration proof of concept wins MPP Global hack; " + more);
+            ask(attributes.context, "Alexa integration proof of concept wins MPP Global hack; " + more);
             break;
         case 2:
-            ask(context, "MPP goes global; " + more);
+            ask(attributes.context, "MPP goes global; " + more);
             break;
         default:
-            ask(context, "There are no more headlines; Would you like to start again?");
+            ask(attributes.context, "There are no more headlines; Would you like to start again?");
             break;
     }
 }
@@ -92,7 +97,7 @@ function SubscriptionPurchase(){
 }
 
 function GetContent(){
-    ConfigAdhoc(context);
+    ConfigAdhoc(attributes.context);
 }
 
 function ConfigAdhoc(context) {
