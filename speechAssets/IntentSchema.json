@@ -1,0 +1,52 @@
+{
+  "intents": [
+    {
+      "intent": "GetHeadlinesIntent"
+    },
+    {
+      "intent": "GetContentIntent"
+    },
+    {
+      "intent": "SubscriptionPurchaseIntent"
+    },
+    {
+      "intent": "SinglePurchaseIntent"
+    },
+    {
+      "intent": "ServiceInfoIntent"
+    },
+    {
+      "intent": "AMAZON.StartOverIntent"
+    },
+    {
+      "intent": "AMAZON.RepeatIntent"
+    },
+    {
+      "intent": "AMAZON.NextIntent"
+    },
+    {
+      "intent": "AMAZON.PreviousIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.PauseIntent"
+    },
+    {
+      "intent": "AMAZON.ResumeIntent"
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
+    }
+  ]
+}

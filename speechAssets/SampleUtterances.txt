@@ -1,0 +1,21 @@
+GetHeadlinesIntent give me the news
+GetHeadlinesIntent give me the headlines
+GetHeadlinesIntent what's the news
+
+GetContentIntent read me the article
+GetContentIntent give me the article
+GetContentIntent tell me more
+
+SubscriptionPurchaseIntent subscription 
+SubscriptionPurchaseIntent purchase subscription
+SubscriptionPurchaseIntent purchase a subscription
+
+SinglePurchaseIntent make single purchase
+SinglePurchaseIntent article
+SinglePurchaseIntent purchase article
+SinglePurchaseIntent purchase the article
+
+ServiceInfoIntent what's the status of my subscription
+ServiceInfoIntent how's my subscription
+ServiceInfoIntent check my subscription
+ServiceInfoIntent subscription status
