@@ -2,8 +2,8 @@
 var EsuiteInterface = require('./esuiteInterface');
 var Alexa = require('alexa-sdk');
 
-let sessionToken;
-let currentAccountId;
+this.attributes["sessionToken"];
+this.attributes["currentAccountId"];
 
 var checkEntitlementsFull = function () {
     var esuiteInterface = new EsuiteInterface();
@@ -17,8 +17,8 @@ var checkEntitlementsFull = function () {
                     console.log('Token from Authenticate Account: ' + token);
                     console.log('Account Id from Authenticate Account: ' + accountId);
                     console.log('Starting: Check Account Entitlement');
-                    sessionToken = token;
-                    currentAccountId = accountId;
+                    this.attributes["sessionToken"] = token;
+                    this.attributes["currentAccountId"] = accountId;
                     return checkEntitlementsShort(token, accountId);
                 } else {
                     console.log('Error in Authenticate Account');
@@ -56,17 +56,13 @@ var checkEntitlementsShort = function (token, accountId) {
     });
 }
 
-var readHeadlines = function () {
-    this.emit(':tell', 'Headlines are usually read out here.');
-}
-
 var processPayment = function () {
     var esuiteInterface = new EsuiteInterface();
-    esuiteInterface.processPayment(sessionToken, function (isError, response) {
+    esuiteInterface.processPayment(this.attributes["sessionToken"], function (isError, response) {
         if (!isError) {
-            this.emit(':tell', 'Purchase Sucessful.');
+            return true;
         } else {
-            this.emit(':tell', 'Purchase Failed.');
+            return false;
         }
     });
 }
@@ -88,29 +84,41 @@ var handlers = {
         this.emit(':ask', "I can read you the headlines or give you the status of your subscription; Which one would you like?", "Which one would you like?");
     },
     'GetHeadlinesIntent': function () {
+        this.attributes["readingHeadlines"] = true;
         //Read headlines one by one.
-        this.emit(':tell', 'Headline one.');
+        this.emit(':ask', 'Headline one; Would you like to hear more?');
     },
     'GetContentIntent': function () {
         //Checks for entitlements and purchases if needed.
         var hasEntitlement = false;
-        if(!sessiontoken){
+        if(!this.attributes["sessionToken"]){
             hasEntitlement = checkEntitlementsFull();
         }else{
             hasEntitlement = checkEntitlementsShort();
         }
 
+        this.emit(':tell', 'So far so good.');
+
         if (hasEntitlement) {
-            readHeadlines();
+            this.emit(':tell', 'Reading full story.');
         } else {
-            this.emit(':ask', 'You do not have access to this content. You can make a single purchase for the item or purchase a subscription.', 'What would you like to do?');
+            this.emit(':ask', 'You do not have access to this content. Would you like to make a single purchase; or purchase a subscription?', 'What would you like to do?');
         }
     },
     'SinglePurchaseIntent': function () {
         //Do process payment.
         this.attributes["purchaseType"] = "singlePurchase";
 
-        this.emit(':ask', 'Payment failed; Would you like to try again?', 'Would you like to try again?');
+        var payment = processPayment();
+
+        if(payment)
+        {
+            this.emit('GetContentIntent');
+        }
+        else
+        {
+            this.emit(':ask', 'Payment failed; Would you like to try again?', 'Would you like to try again?');
+        }
     },
     'SubscriptionPurchaseIntent': function () {
         //Do add Subscription.
@@ -123,15 +131,25 @@ var handlers = {
         this.emit(':tell','Service info intent received.');
     },
     'AMAZON.YesIntent': function () {
-        if(this.attributes["purchaseType"] == "singlePurchase")
+        if(this.attributes["readingHeadlines"])
         {
-            this.emit(':tell','Purchased single item.');
-            //do single purchase
+            this.attributes["readingHeadlines"] = false;
+            this.emit('GetContentIntent');
         }
-        else if(this.attributes["purchaseType"] == "subscription")
+        else
         {
-            this.emit(':tell','Purchased subscription.');
-            //do subscription purchase
+            if(this.attributes["purchaseType"] == "singlePurchase")
+            {
+                this.attributes["purchaseType"] = "";
+                this.emit(':tell','Purchased single item.');
+                //do single purchase
+            }
+            else if(this.attributes["purchaseType"] == "subscription")
+            {
+                this.attributes["purchaseType"] = "";
+                this.emit(':tell','Purchased subscription.');
+                //do subscription purchase
+            }
         }
     },
     'AMAZON.NoIntent': function () {
