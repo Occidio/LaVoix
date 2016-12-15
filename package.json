@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Occidio/LaVoix#readme",
   "dependencies": {
+    "alexa-sdk": "^1.0.6",
     "request": "^2.79.0"
   }
 }
