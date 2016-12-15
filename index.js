@@ -181,7 +181,8 @@ function AuthenticateAccount(context, sessionToken) {
 
 function AuthenticateSuccess(context, sessionToken) {
     //tell(context, 'The account id is: '+accountId+' and the session is: '+sessionToken);
-    ProcessPayment(context, sessionToken);
+    //ProcessPayment(context, sessionToken);
+     VerifySession(context, sessionToken)
 }
 
 function ProcessPayment(context, sessionToken) {
@@ -229,7 +230,7 @@ function ProcessPaymentSuccess(context) {
     tell(context, 'Purchase successful. Check e.H.Q.!');
 }
 
-function verifySession(context, sessionToken) {
+function VerifySession(context, sessionToken) {
     var https = require('https');
     // An object of options to indicate where to post to
     var post_options = {
@@ -311,9 +312,9 @@ function CheckAccountEntitlement(context, sessionToken, accountId) {
 function CheckEntitlementSuccess(context, entitlements) {
     var count = entitlements.length;
     if (count === 0) {
-        tell(context, 'You do not have any entitlements');
+        ask(context, 'You do not have any entitlements, would you like to buy this?');
     } else {
-        tell(context, 'You have' + count + 'entitlements');
+        ask(context, 'You have' + count + 'entitlements');
     }
 }
 
