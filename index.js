@@ -1,38 +1,76 @@
+'use strict';
 var EsuiteInterface = require('./esuiteInterface');
 var Alexa = require('alexa-sdk');
 
-exports.handler = function(event, context, callback){
+var checkEntitlements = function () {
+    var esuiteInterface = new EsuiteInterface();
+    console.log('Starting: Config Miss Charge');
+    esuiteInterface.ConfigurationMiscCharge(function (isError, token) {
+        if (!isError) {
+            console.log('Token from Config Miss Charge: ' + token);
+            console.log('Starting: Authenticate Account');
+            esuiteInterface.AuthenticateAccount(token, function (isError, token, accountId) {
+                if (!isError) {
+                    console.log('Token from Authenticate Account: ' + token);
+                    console.log('Account Id from Authenticate Account: ' + accountId);
+                    console.log('Starting: Check Account Entitolement');
+                    esuiteInterface.CheckAccountEntitolement(token, accountId, function (isError, entitlements) {
+                        if (!isError) {
+                            console.log('Entitolement from Check Account Entitolement: ' + entitlements);
+                            if(entitlements) {
+                                entitlements.forEach(function(element) {
+                                    if(entitlement.identifier === "pamplemousse") {
+                                        console.log('found Pomplemousse');
+                                        return true;
+                                    }                                    
+                                }, this);
+                                console.log('There wasnt any entitlement called Pomplemousse, but there are '+entitlements.length+' entitlemnts');
+                                return false;
+                            }else{
+                                console.log('This user has no entitolements');
+                                return false;
+                            }
+                        } else {
+                            console.log('Error in Check Account Entitolement');
+                            console.log(entitlements);
+                        }
+                    });
+                } else {
+                    console.log('Error in Authenticate Account');
+                    console.log(token);
+                }
+            });
+        } else {
+            console.log('Error in Configuration Misc Charge');
+            console.log(token);
+        }
+    });
+};
+
+checkEntitlements();
+
+exports.handler = function (event, context, callback) {
     var alexa = Alexa.handler(event, context);
     alexa.appId = "amzn1.ask.skill.3fcdbcd8-7d87-4def-8542-7ea11b85acdc";
     alexa.registerHandlers(handlers);
     alexa.execute();
 };
 
-var PurchaseNews = function(){  
-        this.ConfigurationMiscCharge(function(isError, token){
-            this.emit(':tell','Call to misc done.');
-            if(!isError){           
-                this.AuthenticateAccount(function(isError, token){
-                this.emit(':tell','Call to authenticate done.');
-                    if(!isError){                  
-                        this.emit(':tell','DONE THE THING.');
-                    }
-                });
-            }
-        });
+var PurchaseNews = function () {
+    var hasEntitlement = checkEntitlements();
 };
 
 var headline = "Headline one; Do you care?";
 var headlineReprompt = "Would you like to hear the whole story?";
 
 var handlers = {
-    'LaunchRequest': function(){
+    'LaunchRequest': function () {
         //Gives instruction on how to use app.
         this.emit(':ask', "I can read you the headlines or give you the status of your subscription.", "Which one would you like?");
     },
     'GetHeadlinesIntent': function () {
         //Read headlines one by one.
-        this.emit(':ask',headline, headlineReprompt);
+        this.emit(':ask', headline, headlineReprompt);
     },
     'GetContentIntent': function () {
         //Checks for entitlements and purchases if needed.
@@ -41,16 +79,12 @@ var handlers = {
     },
     'SinglePurchaseIntent': function (intent, session, response) {
         //Do process payment.
-        this.emit(':tell','Single purchase intent received.');
-
         session.attributes.purchaseType = "singlePurchase";
 
         this.emit(':ask','Payment failed.', 'Would you like to try again?');
     },
     'SubscriptionPurchaseIntent': function (intent, session, response) {
         //Do add Subscription.
-        this.emit(':tell','Subscription purchase intent received.');
-
         session.attributes.purchaseType = "subscription";
 
         this.emit(':ask','Payment failed.', 'Would you like to try again?');
