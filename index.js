@@ -14,7 +14,7 @@ exports.handler = function (event, context) {
                 ask(context, "Headlines are now.");
                 break;
             case 'GetContentIntent':
-                ConfigAdhoc(event,context);
+                ConfigAdhoc(context);
                 break;
             default:
                 tell(context, 'WTF you talking about. This is an intent.');
@@ -23,7 +23,7 @@ exports.handler = function (event, context) {
     }  
 };
 
-function ConfigAdhoc(event, context) {
+function ConfigAdhoc(context) {
     var https = require('https');
     // An object of options to indicate where to post to
     var post_options = {
@@ -62,7 +62,53 @@ function ConfigAdhoc(event, context) {
 }
 
 function ConfigSuccess(context, sessionToken) {
-    tell(context, sessionToken)
+    //tell(context, sessionToken);
+    AuthenticateAccount(context, sessionToken);
+}
+
+function AuthenticateAccount(context, sessionToken) {
+    var https = require('https');
+    // An object of options to indicate where to post to
+    var post_options = {
+        host: 'uat.mppglobal.com',
+        port: '443',
+        path: '/api/accounts/authenticate',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'https://skinsuat.mppglobal.com',
+            'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
+            'X-Version': '1.0.0',
+            'X-SessionId': ''+sessionToken
+        }
+    };
+
+    var post_data = '{"email": "Grapefruit@mppglobal.com","password": "testpassword01"}';
+    callback = function (response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            var data = JSON.parse(str);
+            var sessionToken = data.sessionToken;
+            var accountId = data.accountId;
+            AuthenticateSuccess(context, sessionToken, accountId);
+        });
+    };
+
+    // Set up the request
+    var post_req = https.request(post_options, callback);
+
+    // post the data
+    post_req.write(post_data);
+    post_req.end();
+}
+
+function AuthenticateSuccess(context, sessionToken, accountId) {
+    tell(context, 'The account id is: '+accountId+' and the session is: '+sessionToken);
 }
 
 function tell(context, text) {
