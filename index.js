@@ -2,7 +2,8 @@ var NUMBER_OF_HEADLINES = 2;
 var attributes = {
     readingHeadlines: false,
     headline: 0,
-    context: null
+    context: null,
+    isPurchase: false
 };
 
 exports.handler = function (event, context) {
@@ -84,7 +85,8 @@ function GetHeadlines() {
 }
 
 function SinglePurchase() {
-
+    attributes.isPurchase = true;
+    ConfigAdhoc();
 }
 
 function SubscriptionPurchase() {
@@ -92,6 +94,7 @@ function SubscriptionPurchase() {
 }
 
 function GetContent() {
+    attributes.isPurchase = false;
     ConfigAdhoc();
 }
 
@@ -179,7 +182,12 @@ function AuthenticateAccount(sessionToken) {
 }
 
 function AuthenticateSuccess(sessionToken) {
-    VerifySession(sessionToken)
+    if(attributes.isPurchase) {
+        ProcessPayment(sessionToken);
+    }else{
+        VerifySession(sessionToken);
+    }
+    
 }
 
 function ProcessPayment(sessionToken) {
@@ -199,7 +207,7 @@ function ProcessPayment(sessionToken) {
         }
     };
 
-    var post_data = '{"paymentMethod": "CreditCard","cvv": "123","voucherCode": "GPM6A374P3"}';
+    var post_data = '{"paymentMethod": "CreditCard","cvv": "123","orderItems": [{"entitlements": [{"identifier": "Pamplemousse Entitlement","startDate": "2016-12-15T21:19:12.4607675Z","expiryDate": "2018-12-16T21:19:12.4607675Z"}]}]}';
     callback = function (response) {
         var str = '';
 
