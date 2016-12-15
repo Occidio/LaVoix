@@ -2,7 +2,6 @@
 var EsuiteInterface = require('./esuiteInterface');
 var Alexa = require('alexa-sdk');
 var request = require('request');
-var http = require('http');
 
 var checkEntitlementsFull = function (callback) {
     var esuiteInterface = new EsuiteInterface();
@@ -108,22 +107,88 @@ var handlers = {
         //     }
         // });
 
-        // Configure the request
-        var options = {
-            host: 'https://uat.mppglobal.com',
-            path: '/api/workflows/configurations/adhoc',
-            method: 'POST',
-            'Content-Type': 'application/json'
+        // var headers = {
+        //     'X-Version': '1.0.0',
+        //     'X-ClientId': '433',
+        //     'X-ClientPassword': 'Km25Acr9GRo3b4',
+        //     'Origin': 'https://uat.mppglobal.com'
+        // };
+        // // Configure the request
+        // var options = {
+        //     'host': 'https://uat.mppglobal.com',
+        //     'path': '/api/workflows/configurations/adhoc',
+        //     'method': 'POST',
+        //     'Content-Type': 'application/json',
+        //     'headers': headers
+        // };
+
+        // var callback = function(response){
+        //     var str = ''
+        //     response.on('data', function (chunk) {
+        //         str += chunk;
+        //         this.emit(':tell', 'string is: ' + str);
+        //     });
+
+        //     response.on('end', function () {
+        //         console.log(str);
+        //     });
+        // }
+
+        // var req = http.request(options, callback);
+        // var postData = '{"orderItems": [{"description": "Grapegruit purchase","priceBreakDown": {"grossAmount": 10}}],"workFlowConfiguration": {"pricing": {"paymentMethod": "CreditCard","currency": "GBP"},"returnUrl": "https://google.com"}}';
+        // req.write(postData);
+        // req.end();
+
+
+        // Set the headers
+        var headers = {
+            'Content-Type': 'application/json',
+            'X-Version': '1.0.0',
+            'X-ClientId': '433',
+            'X-ClientPassword': 'Km25Acr9GRo3b4',
+            'Origin': 'https://uat.mppglobal.com'
         };
 
-        var callback = function(response){
-            this.emit(':tell', 'response is: ' + response);
+        // Configure the request
+        var options = {
+            'url': 'https://uat.mppglobal.com/api/workflows/configurations/adhoc',
+            'method': 'POST',
+            'headers': headers,
+            'json': {
+                "orderItems": [{
+                    "description": "Grapegruit purchase",
+                    "priceBreakDown": {
+                        "grossAmount": 10
+                    }
+                }],
+                "workFlowConfiguration": {
+                    "pricing": {
+                        "paymentMethod": "CreditCard",
+                        "currency": "GBP"
+                    },
+                    "returnUrl": "https://google.com"
+                }
+            }
+        };
+
+        try{
+            request(options, function (error, response, body) {
+                if(error)
+                {
+                    this.emit(':tell','request failed');
+                }
+                else{
+                    this.emit(':tell','request success');
+                }
+            });
+        }
+        catch(error){
+            this.emit(':tell', 'request failed with error ');
         }
 
-        var req = http.request(options, callback);
-        var postData = '{"orderItems": [{"description": "Grapegruit purchase","priceBreakDown": {"grossAmount": 10}}],"workFlowConfiguration": {"pricing": {"paymentMethod": "CreditCard","currency": "GBP"},"returnUrl": "https://google.com"}}';
-        req.write(postData);
-        req.end();
+        do{
+
+        }while(true);
     },
     'SinglePurchaseIntent': function () {
         //Do process payment.

@@ -37,16 +37,15 @@ esuiteInterfacePrototype.ConfigurationMiscCharge = function (callback) {
 			}
 		}
 	};
-	callback(false, 'sessionToken');
 
-	// request(options, function (error, response, body) {
-	// 	if (error) {
-	// 		callback(true, response);
-	// 		return;
-	// 	}
-	// 	var sessionToken = body.sessionToken;
-	// 	callback(false, sessionToken);
-	// })
+	request(options, function (error, response, body) {
+		if (error) {
+			callback(true, response);
+			return;
+		}
+		var sessionToken = body.sessionToken;
+		callback(false, sessionToken);
+	})
 };
 
 esuiteInterfacePrototype.AuthenticateAccount = function (session, callback) {
