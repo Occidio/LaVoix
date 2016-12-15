@@ -31,6 +31,9 @@ exports.handler = function (event, context) {
             case 'SubscriptionPurchaseIntent':
                 SubscriptionPurchase();
                 break;
+            case 'SubscriptionInfoIntent':
+                SubscriptionInfo();
+                break;
             case 'AMAZON.YesIntent':
                 if (attributes.readingHeadlines === true) {
                     attributes.readingHeadlines = false;
@@ -59,6 +62,9 @@ exports.handler = function (event, context) {
                 else {
                     LaunchRequest();
                 }
+                break;
+            case 'AMAZON.StopIntent':
+                tell("Buh bye");
                 break;
             default:
                 tell('WTF you talking about. This is an intent.');
@@ -98,7 +104,11 @@ function SinglePurchase() {
 }
 
 function SubscriptionPurchase() {
+    tell("Not implemented yet");
+}
 
+function SubscriptionInfo() {
+    tell("Not implemented yet");
 }
 
 function GetContent() {

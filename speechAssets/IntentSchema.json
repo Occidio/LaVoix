@@ -13,7 +13,7 @@
       "intent": "SinglePurchaseIntent"
     },
     {
-      "intent": "ServiceInfoIntent"
+      "intent": "SubscriptionInfoIntent"
     },
     {
       "intent": "AMAZON.StartOverIntent"

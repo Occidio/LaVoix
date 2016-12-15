@@ -16,7 +16,7 @@ SinglePurchaseIntent article
 SinglePurchaseIntent purchase article
 SinglePurchaseIntent purchase the article
 
-ServiceInfoIntent what's the status of my subscription
-ServiceInfoIntent how's my subscription
-ServiceInfoIntent check my subscription
-ServiceInfoIntent subscription status
+SubscriptionInfoIntent what's the status of my subscription
+SubscriptionInfoIntent how's my subscription
+SubscriptionInfoIntent check my subscription
+SubscriptionInfoIntent subscription status
