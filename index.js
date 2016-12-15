@@ -6,18 +6,14 @@ var attributes = {
 };
 
 exports.handler = function (event, context) {
-<<<<<<< HEAD
-    if (event.request.type !== "IntentRequest") {
-=======
     attributes.context = context;
     if(event.request.type !== "IntentRequest"){
->>>>>>> 19c9ddac89770dd85723f7b8dff2b226494925d9
         switch (event.request.type) {
             case 'LaunchRequest':
                 LaunchRequest();
                 break;
             default:
-                tell(context, 'WTF you talking about. This is not an intent.');
+                tell('WTF you talking about. This is not an intent.');
                 break;
         }
     } else {
@@ -58,14 +54,14 @@ exports.handler = function (event, context) {
                 }
                 break;
             default:
-                tell(context, 'WTF you talking about. This is an intent.');
+                tell('WTF you talking about. This is an intent.');
                 break;
         }
     }
 };
 
 function LaunchRequest(){
-    ask(attributes.context, "I can give you the headlines or give you the status of your subscription; Which one would you like?");
+    ask("I can give you the headlines or give you the status of your subscription; Which one would you like?");
 }
 
 function GetHeadlines(){
@@ -81,13 +77,13 @@ function GetHeadlines(){
     var more = "Would you like to know more?"
     switch(attributes.headline){
         case 1:
-            ask(attributes.context, "Alexa integration proof of concept wins MPP Global hack; " + more);
+            ask("Alexa integration proof of concept wins MPP Global hack; " + more);
             break;
         case 2:
-            ask(attributes.context, "MPP goes global; " + more);
+            ask("MPP goes global; " + more);
             break;
         default:
-            ask(attributes.context, "There are no more headlines; Would you like to start again?");
+            ask("There are no more headlines; Would you like to start again?");
             break;
     }
 }
@@ -101,10 +97,10 @@ function SubscriptionPurchase(){
 }
 
 function GetContent(){
-    ConfigAdhoc(attributes.context);
+    ConfigAdhoc();
 }
 
-function ConfigAdhoc(context) {
+function ConfigAdhoc() {
     var https = require('https');
     // An object of options to indicate where to post to
     var post_options = {
@@ -130,7 +126,7 @@ function ConfigAdhoc(context) {
         });
 
         response.on('end', function () {
-            ConfigSuccess(context, JSON.parse(str).sessionToken);
+            ConfigSuccess(JSON.parse(str).sessionToken);
         });
     };
 
@@ -142,12 +138,11 @@ function ConfigAdhoc(context) {
     post_req.end();
 }
 
-function ConfigSuccess(context, sessionToken) {
-    //tell(context, sessionToken);
-    AuthenticateAccount(context, sessionToken);
+function ConfigSuccess(sessionToken) {
+    AuthenticateAccount(sessionToken);
 }
 
-function AuthenticateAccount(context, sessionToken) {
+function AuthenticateAccount(sessionToken) {
     var https = require('https');
     // An object of options to indicate where to post to
     var post_options = {
@@ -176,7 +171,7 @@ function AuthenticateAccount(context, sessionToken) {
             var data = JSON.parse(str);
             var sessionToken = data.sessionToken;
             var accountId = data.accountId;
-            AuthenticateSuccess(context, sessionToken, accountId);
+            AuthenticateSuccess(sessionToken, accountId);
         });
     };
 
@@ -188,13 +183,11 @@ function AuthenticateAccount(context, sessionToken) {
     post_req.end();
 }
 
-function AuthenticateSuccess(context, sessionToken) {
-    //tell(context, 'The account id is: '+accountId+' and the session is: '+sessionToken);
-    //ProcessPayment(context, sessionToken);
-     VerifySession(context, sessionToken)
+function AuthenticateSuccess(sessionToken) {
+     VerifySession(sessionToken)
 }
 
-function ProcessPayment(context, sessionToken) {
+function ProcessPayment(sessionToken) {
     var https = require('https');
     // An object of options to indicate where to post to
     var post_options = {
@@ -223,7 +216,7 @@ function ProcessPayment(context, sessionToken) {
             var data = JSON.parse(str);
             var sessionToken = data.sessionToken;
             var accountId = data.accountId;
-            ProcessPaymentSuccess(context);
+            ProcessPaymentSuccess();
         });
     };
 
@@ -235,11 +228,11 @@ function ProcessPayment(context, sessionToken) {
     post_req.end();
 }
 
-function ProcessPaymentSuccess(context) {
-    tell(context, 'Purchase successful. Check e.H.Q.!');
+function ProcessPaymentSuccess() {
+    tell('Purchase successful. Check e.H.Q.!');
 }
 
-function VerifySession(context, sessionToken) {
+function VerifySession(sessionToken) {
     var https = require('https');
     // An object of options to indicate where to post to
     var post_options = {
@@ -266,7 +259,7 @@ function VerifySession(context, sessionToken) {
         response.on('end', function () {
             var data = JSON.parse(str);
             var accountId = data.accountId;
-            CheckAccountEntitlement(context, sessionToken, accountId);
+            CheckAccountEntitlement(sessionToken, accountId);
         });
     };
 
@@ -278,7 +271,7 @@ function VerifySession(context, sessionToken) {
     post_req.end();
 }
 
-function CheckAccountEntitlement(context, sessionToken, accountId) {
+function CheckAccountEntitlement(sessionToken, accountId) {
     var https = require('https');
 
     // An object of options to indicate where to post to
@@ -306,7 +299,7 @@ function CheckAccountEntitlement(context, sessionToken, accountId) {
         response.on('end', function () {
             var data = JSON.parse(str);
             var entitlements = data.entitlements;
-            CheckEntitlementSuccess(context, entitlements);
+            CheckEntitlementSuccess(entitlements);
         });
     };
 
@@ -318,16 +311,16 @@ function CheckAccountEntitlement(context, sessionToken, accountId) {
     post_req.end();
 }
 
-function CheckEntitlementSuccess(context, entitlements) {
+function CheckEntitlementSuccess(entitlements) {
     var count = entitlements.length;
     if (count === 0) {
-        ask(context, 'You do not have any entitlements, would you like to buy this?');
+        ask('You do not have any entitlements, would you like to buy this?');
     } else {
-        ask(context, 'You have' + count + 'entitlements');
+        ask('You have' + count + 'entitlements');
     }
 }
 
-function tell(context, text) {
+function tell(text) {
 
     var response = {
         outputSpeech: {
@@ -337,12 +330,12 @@ function tell(context, text) {
         shouldEndSession: true
     };
 
-    context.succeed({
+    attributes.context.succeed({
         response: response
     });
 }
 
-function ask(context, text) {
+function ask(text) {
 
     var response = {
         outputSpeech: {
@@ -352,7 +345,7 @@ function ask(context, text) {
         shouldEndSession: false
     };
 
-    context.succeed({
+    attributes.context.succeed({
         response: response
     });
 }
