@@ -41,21 +41,6 @@ exports.handler = function (event, context, callback) {
     alexa.execute();
 };
 
-<<<<<<< HEAD
-var PurchaseNews = function () {
-    this.ConfigurationMiscCharge(function (isError, token) {
-        this.emit(':tell', 'Call to misc done.');
-        if (!isError) {
-            this.AuthenticateAccount(function (isError, token) {
-                this.emit(':tell', 'Call to authenticate done.');
-                if (!isError) {
-                    this.emit(':tell', 'DONE THE THING.');
-                }
-            });
-        }
-    });
-}
-=======
 var PurchaseNews = function(){  
         this.ConfigurationMiscCharge(function(isError, token){
             this.emit(':tell','Call to misc done.');
@@ -69,7 +54,6 @@ var PurchaseNews = function(){
             }
         });
 };
->>>>>>> e72a805dc3e674657ae685fc9acd360f2c2f4220
 
 var instructions = "I can read you the headlines, or get you service fuck.";
 
