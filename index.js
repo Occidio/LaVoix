@@ -7,7 +7,7 @@ var attributes = {
 
 exports.handler = function (event, context) {
     attributes.context = context;
-    if(event.request.type !== "IntentRequest"){
+    if (event.request.type !== "IntentRequest") {
         switch (event.request.type) {
             case 'LaunchRequest':
                 LaunchRequest();
@@ -31,10 +31,9 @@ exports.handler = function (event, context) {
                 SubscriptionPurchase();
                 break;
             case 'AMAZON.YesIntent':
-                if(attributes.readingHeadlines === true)
-                {
+                if (attributes.readingHeadlines === true) {
                     attributes.readingHeadlines = false;
-                    switch(attributes.headline){
+                    switch (attributes.headline) {
                         case 1:
                             GetContent();
                             break;
@@ -48,8 +47,7 @@ exports.handler = function (event, context) {
                 }
                 break;
             case 'AMAZON.NoIntent':
-                if(attributes.readingHeadlines === true)
-                {
+                if (attributes.readingHeadlines === true) {
                     GetHeadlines();
                 }
                 break;
@@ -60,22 +58,19 @@ exports.handler = function (event, context) {
     }
 };
 
-function LaunchRequest(){
+function LaunchRequest() {
     ask("I can give you the headlines or give you the status of your subscription; Which one would you like?");
 }
 
-function GetHeadlines(){
+function GetHeadlines() {
     attributes.readingHeadlines = true;
-    if(attributes.headline == NUMBER_OF_HEADLINES)
-    {
+    if (attributes.headline == NUMBER_OF_HEADLINES) {
         attributes.headline = 0;
-    }
-    else
-    {
+    } else {
         attributes.headline = attributes.headline + 1;
     }
     var more = "Would you like to know more?"
-    switch(attributes.headline){
+    switch (attributes.headline) {
         case 1:
             ask("Alexa integration proof of concept wins MPP Global hack; " + more);
             break;
@@ -88,15 +83,15 @@ function GetHeadlines(){
     }
 }
 
-function SinglePurchase(){
-    
+function SinglePurchase() {
+
 }
 
-function SubscriptionPurchase(){
-    
+function SubscriptionPurchase() {
+
 }
 
-function GetContent(){
+function GetContent() {
     ConfigAdhoc();
 }
 
@@ -184,7 +179,7 @@ function AuthenticateAccount(sessionToken) {
 }
 
 function AuthenticateSuccess(sessionToken) {
-     VerifySession(sessionToken)
+    VerifySession(sessionToken)
 }
 
 function ProcessPayment(sessionToken) {
@@ -308,12 +303,17 @@ function CheckAccountEntitlement(sessionToken, accountId) {
 }
 
 function CheckEntitlementSuccess(entitlements) {
-    var count = entitlements.length;
-    if (count === 0) {
-        ask('You do not have any entitlements, would you like to buy this?');
+    if (entitlements) {
+        var count = entitlements.length;
+        if (count === 0) {
+            ask('You do not have any entitlements, would you like to buy this?');
+        } else {
+            ask('You have' + count + 'entitlements');
+        }
     } else {
-        ask('You have' + count + 'entitlements');
+        ask('You do not have any entitlements, would you like to buy this?');
     }
+
 }
 
 function tell(text) {
