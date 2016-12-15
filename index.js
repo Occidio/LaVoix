@@ -64,7 +64,7 @@ exports.handler = function (event, context) {
                 }
                 break;
             case 'AMAZON.StopIntent':
-                tell("Buh bye");
+                tell("Faaaack off");
                 break;
             default:
                 tell('WTF you talking about. This is an intent.');
