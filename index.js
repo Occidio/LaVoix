@@ -141,7 +141,7 @@ function ProcessPayment(context, sessionToken) {
             var data = JSON.parse(str);
             var sessionToken = data.sessionToken;
             var accountId = data.accountId;
-            ProcessPaymentSuccess();
+            ProcessPaymentSuccess(context);
         });
     };
 
@@ -153,9 +153,11 @@ function ProcessPayment(context, sessionToken) {
     post_req.end();
 }
 
-function ProcessPaymentSuccess() {
+function ProcessPaymentSuccess(context) {
     tell(context, 'Purchase successful. Check eHQ!');
 }
+
+function CheckAccountEntitlement()
 
 function tell(context, text) {
 
@@ -170,7 +172,7 @@ function tell(context, text) {
     context.succeed({
         response: response
     });
-};
+}
 
 function ask(context, text) {
 
@@ -185,4 +187,4 @@ function ask(context, text) {
     context.succeed({
         response: response
     });
-};
+}
