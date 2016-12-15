@@ -1,79 +1,42 @@
-/**
-    Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+var EsuiteInterface = require('./esuiteInterface');
+// var http = require('http');
+var Alexa = require('alexa-sdk');
 
-    Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-
-        http://aws.amazon.com/apache2.0/
-
-    or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-*/
-
-/**
- * This simple sample has no external dependencies or session management, and shows the most basic
- * example of how to create a Lambda function for handling Alexa Skill requests.
- *
- * Examples:
- * One-shot model:
- *  User: "Alexa, tell Hello World to say hello"
- *  Alexa: "Hello World!"
- */
-
-/**
- * App ID for the skill
- */
-var APP_ID = "amzn1.ask.skill.3fcdbcd8-7d87-4def-8542-7ea11b85acdc"; //replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
-
-/**
- * The AlexaSkill prototype and helper functions
- */
-var AlexaSkill = require('./AlexaSkill');
-
-/**
- * HelloWorld is a child of AlexaSkill.
- * To read more about inheritance in JavaScript, see the link below.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
- */
-var HelloWorld = function () {
-    AlexaSkill.call(this, APP_ID);
+exports.handler = function(event, context, callback){
+    var alexa = Alexa.handler(event, context);
+    alexa.appId = "amzn1.ask.skill.3fcdbcd8-7d87-4def-8542-7ea11b85acdc";
+    alexa.registerHandlers(handlers);
+    alexa.execute();
 };
 
-// Extend AlexaSkill
-HelloWorld.prototype = Object.create(AlexaSkill.prototype);
-HelloWorld.prototype.constructor = HelloWorld;
-
-HelloWorld.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log("HelloWorld onSessionStarted requestId: " + sessionStartedRequest.requestId
-        + ", sessionId: " + session.sessionId);
-    // any initialization logic goes here
+var handlers = {
+    'HelloWorldIntent': function () {
+        this.emit(':tell', 'Hello World!');
+    }
 };
 
-HelloWorld.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log("HelloWorld onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = "Welcome to the Alexa Skills Kit, you can say hello";
-    var repromptText = "You can say hello";
-    response.ask(speechOutput, repromptText);
-};
+// var authCallback = function(isError, response){
+//     if(isError){
+// 			console.log('ERROR:' + response);
+//   }else{
+//       console.log('authCallback Token:' + response);
+//   }
+// }
 
-HelloWorld.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    console.log("HelloWorld onSessionEnded requestId: " + sessionEndedRequest.requestId
-        + ", sessionId: " + session.sessionId);
-    // any cleanup logic goes here
-};
+// var miscCallback = function(isError, response){
+//   if(isError){
+// 			console.log('ERROR:' + response);
+//   }else{
+//       console.log('miscCallback Token:' + response);
+      
+//       var esuiteInterface = new EsuiteInterface();
+//       esuiteInterface.AuthenticateAccount(response, authCallback);
+//   }
+// }
 
-HelloWorld.prototype.intentHandlers = {
-    // register custom intent handlers
-    "HelloWorldIntent": function (intent, session, response) {
-        response.tellWithCard("Hello World!", "Hello World", "Hello World!");
-    },
-    "AMAZON.HelpIntent": function (intent, session, response) {
-        response.ask("You can say hello to me!", "You can say hello to me!");
-}
-};
-
-// Create the handler that responds to the Alexa Request.
-exports.handler = function (event, context) {
-    // Create an instance of the HelloWorld skill.
-    var helloWorld = new HelloWorld();
-    helloWorld.execute(event, context);
-};
+// var server = http.createServer(function(req, res) {
+//   var esuiteInterface = new EsuiteInterface();
+//   res.writeHead(200);
+//   esuiteInterface.ConfigurationMiscCharge(miscCallback);
+// });
+// server.listen(8080);
