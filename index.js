@@ -266,8 +266,6 @@ function VerifySession(sessionToken) {
     // Set up the request
     var post_req = https.request(post_options, callback);
 
-    // post the data
-    post_req.write(post_data);
     post_req.end();
 }
 
@@ -306,8 +304,6 @@ function CheckAccountEntitlement(sessionToken, accountId) {
     // Set up the request
     var post_req = https.request(post_options, callback);
 
-    // post the data
-    post_req.write(post_data);
     post_req.end();
 }
 
