@@ -53,7 +53,7 @@ exports.handler = function (event, context) {
                     attributes.readingStory = false;
                     GetHeadlines();
                 } else {
-                    ask('You have two choises: single purchase, or purchase subscription');
+                    ask('Would you like to make a single purchase, or purchase a subscription?');
                 }
                 break;
             case 'AMAZON.NoIntent':
@@ -125,16 +125,16 @@ function GetContent() {
 
 function ReadFullStory(justBought) {
     var moreHeadlines = 'Would you like another headline?';
-    var purchaseSuccess = 'Purchase successful; ';
+    var purchaseSuccess = justBought ? 'Purchase successful; ' : "";
     attributes.readingStory = true;
     switch (attributes.headline) {
         case 1:
             var full1 = "The team in charge of developing a proof of concept for integration with Alexa has won first prize at this year's MPP Global hack project. The team will soon be showered with gifts and adoration from colleagues; ";
-            ask(justBought ? justBought : "" + full1 + moreHeadlines);
+            ask(purchaseSuccess + full1 + moreHeadlines);
             break;
         case 2:
             var full2 = "With offices across the world, localized websites, and easy integration with widelly used gadgets, MPP is on track to becoming the solution the world needs; ";
-            ask(justBought ? justBought : "" + full2 + moreHeadlines);
+            ask(purchaseSuccess + full2 + moreHeadlines);
             break;
         default:
             ask("That is not a valid story! " + moreHeadlines);
@@ -455,17 +455,17 @@ function CheckEntitlementSuccess(entitlements) {
     if (entitlements) {
         var count = entitlements.length;
         if (count === 0) {
-            ask('You do not have any entitlements, would you like to buy this?');
+            ask('You do not have an active subscription, would you like to buy access to this content?');
         } else {
             entitlements.forEach(function (entitlement) {
                 if (entitlement.identifier === 'Pamplemousse Entitlement') {
                     ReadFullStory();
                 }
             }, this);
-            ask('You have'+count+' entitlements, but none match this story; Would you like to buy this?');
+            ask('You have '+count+' active subscriptions, but none match this story; Would you like to buy access to this content?');
         }
     } else {
-        ask('You do not have any entitlements, would you like to buy this?');
+        ask('You do not have an active subscription, would you like to buy access to this content?');
     }
 }
 
