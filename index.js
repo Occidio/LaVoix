@@ -362,7 +362,6 @@ function CheckEntitlementSuccess(entitlements) {
             entitlements.forEach(function (entitlement) {
                 if (entitlement.identifier === 'Pamplemousse Entitlement') {
                     ReadFullStory();
-                    break;
                 }
             }, this);
             ask('You have'+count+' entitlements, but none match this story; Would you like to buy this?');
