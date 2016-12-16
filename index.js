@@ -53,7 +53,7 @@ exports.handler = function (event, context) {
                     attributes.readingStory = false;
                     GetHeadlines();
                 } else {
-                    SinglePurchase();
+                    ask('You have two choises: single purchase, or purchase subscription');
                 }
                 break;
             case 'AMAZON.NoIntent':
@@ -108,7 +108,8 @@ function SinglePurchase() {
 }
 
 function SubscriptionPurchase() {
-    tell("Not implemented yet");
+    attributes.purchaseFunction = 'subscription';
+    ConfigSubscription();
 }
 
 function SubscriptionInfo() {
@@ -222,7 +223,6 @@ function ConfigSubscription() {
 }
 
 function ConfigSubscriptionSuccess(sessionToken) {
-    attributes.purchaseFunction = 'subscription';
     AuthenticateAccount(sessionToken);
 }
 
@@ -455,7 +455,6 @@ function CheckEntitlementSuccess(entitlements) {
     } else {
         ask('You do not have any entitlements, would you like to buy this?');
     }
-
 }
 
 function tell(text) {
