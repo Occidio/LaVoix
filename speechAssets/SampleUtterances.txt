@@ -17,6 +17,7 @@ SinglePurchaseIntent article
 SinglePurchaseIntent purchase article
 SinglePurchaseIntent purchase the article
 SinglePurchaseIntent access for today
+SinglePurchaseIntent today
 
 SubscriptionInfoIntent what's the status of my subscription
 SubscriptionInfoIntent how's my subscription

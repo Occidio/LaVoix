@@ -104,11 +104,15 @@ function GetHeadlines() {
 }
 
 function SinglePurchase() {
+    if(attributes.headline == 0)
+        LaunchRequest();
     attributes.purchaseFunction = 'purchase';
     ConfigAdhoc();
 }
 
 function SubscriptionPurchase() {
+    if(attributes.headline == 0)
+        LaunchRequest();
     attributes.purchaseFunction = 'subscription';
     ConfigSubscription();
 }
@@ -119,6 +123,8 @@ function SubscriptionInfo() {
 }
 
 function GetContent() {
+    if(attributes.headline == 0)
+        LaunchRequest();
     attributes.isPurchase = false;
     ConfigAdhoc();
 }
@@ -144,7 +150,7 @@ function ReadFullStory(justBought) {
 
 function Stop() {
     attributes.headline = 0;
-    tell("Goodbye, we'll chat again soon. I will miss you.");
+    tell("Goodbye, we'll chat again soon.");
 }
 
 
