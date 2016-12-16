@@ -82,6 +82,7 @@ function LaunchRequest() {
 }
 
 function GetHeadlines() {
+    attributes.purchaseFunction = null;
     attributes.readingHeadlines = true;
     if (attributes.headline == NUMBER_OF_HEADLINES) {
         attributes.headline = 0;
