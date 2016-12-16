@@ -7,13 +7,10 @@
       "intent": "GetContentIntent"
     },
     {
-      "intent": "SubscriptionPurchaseIntent"
+      "intent": "SubscriptionIntent"
     },
     {
       "intent": "SinglePurchaseIntent"
-    },
-    {
-      "intent": "SubscriptionInfoIntent"
     },
     {
       "intent": "AMAZON.StartOverIntent"

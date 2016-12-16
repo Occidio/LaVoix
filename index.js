@@ -3,6 +3,7 @@ var attributes = {
     readingHeadlines: false,
     headline: 0,
     context: null,
+    purchasing: 0,
     purchaseFunction: null,
     readingStory: false
 };
@@ -29,11 +30,14 @@ exports.handler = function (event, context) {
             case 'SinglePurchaseIntent':
                 SinglePurchase();
                 break;
-            case 'SubscriptionPurchaseIntent':
-                SubscriptionPurchase();
-                break;
-            case 'SubscriptionInfoIntent':
-                SubscriptionInfo();
+            case 'SubscriptionIntent':
+                if(attributes.purchasing === 1){
+                    attributes.purchasing = 0;
+                    SubscriptionPurchase();
+                }
+                else {
+                    SubscriptionInfo();
+                }
                 break;
             case 'AMAZON.YesIntent':
                 if (attributes.readingHeadlines) {
@@ -77,12 +81,14 @@ exports.handler = function (event, context) {
 
 function LaunchRequest() {
     attributes.headline = 0;
+    attributes.purchasing = 0;
     ask("Welcome to grapefruit news. I can give you the headlines, or give you the status of your subscription; Which one would you like?");
 }
 
 function GetHeadlines() {
     attributes.purchaseFunction = null;
     attributes.readingHeadlines = true;
+    attributes.purchasing = 0;
     if (attributes.headline === NUMBER_OF_HEADLINES) {
         attributes.headline = 0;
     } else {
@@ -131,7 +137,7 @@ function GetContent() {
 
 function ReadFullStory(justBought) {
     var moreHeadlines = 'Would you like another headline?';
-    var purchaseSuccess = justBought ? 'Purchase successful; ' : "";
+    var purchaseSuccess = justBought ? 'Purchase successful; Here is your content: ' : "";
     attributes.readingStory = true;
     switch (attributes.headline) {
         case 1:
@@ -460,6 +466,7 @@ function CheckAccountEntitlement(sessionToken, accountId) {
 }
 
 function CheckEntitlementSuccess(entitlements) {
+    attributes.purchasing = 1;
     if (entitlements) {
         var count = entitlements.length;
         if (count === 0) {
@@ -467,6 +474,7 @@ function CheckEntitlementSuccess(entitlements) {
         } else {
             entitlements.forEach(function (entitlement) {
                 if (entitlement.identifier === 'Pamplemousse Entitlement') {
+                    attributes.purchasing = 0;
                     ReadFullStory();
                 }
             }, this);
