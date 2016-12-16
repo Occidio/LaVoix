@@ -271,7 +271,7 @@ function AuthenticateSuccess(sessionToken, accountId) {
     if (attributes.purchaseFunction === 'purchase') {
         ProcessPayment(sessionToken);
     }else if(attributes.purchaseFunction === 'subscription') {
-        
+        ProcessAddSubscription(sessionToken);
     } else {
         CheckAccountEntitlement(sessionToken, accountId);
     }
