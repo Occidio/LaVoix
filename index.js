@@ -3,7 +3,8 @@ var attributes = {
     readingHeadlines: false,
     headline: 0,
     context: null,
-    isPurchase: false
+    isPurchase: false,
+    readingStory: false
 };
 
 exports.handler = function (event, context) {
@@ -35,7 +36,7 @@ exports.handler = function (event, context) {
                 SubscriptionInfo();
                 break;
             case 'AMAZON.YesIntent':
-                if (attributes.readingHeadlines === true) {
+                if (attributes.readingHeadlines) {
                     attributes.readingHeadlines = false;
                     switch (attributes.headline) {
                         case 1:
@@ -48,23 +49,26 @@ exports.handler = function (event, context) {
                             LaunchRequest();
                             break;
                     }
-                }
-                else
-                {
+                } else if (attributes.readingStory) {
+                    attributes.readingStory = false;
+                    GetHeadlines();
+                } else {
                     SinglePurchase();
                 }
                 break;
             case 'AMAZON.NoIntent':
-                if (attributes.readingHeadlines === true) {
+                if (attributes.readingHeadlines) {
                     attributes.readingHeadlines = false;
                     GetHeadlines();
-                }
-                else {
+                } else if (attributes.readingStory){
+                    attributes.readingStory = false;
+                    Stop();
+                }else{
                     LaunchRequest();
                 }
                 break;
             case 'AMAZON.StopIntent':
-                tell("Faaaack off");
+                Stop();
                 break;
             default:
                 tell('WTF you talking about. This is an intent.');
@@ -116,6 +120,27 @@ function GetContent() {
     ConfigAdhoc();
 }
 
+function ReadFullStory() {
+    var moreHeadlines = 'Would you like another headline?'
+    attributes.readingStory = true;
+    switch (attributes.headline) {
+        case 1:
+            ask("Alexa integration. The Full Story!; " + moreHeadlines);
+            break;
+        case 2:
+            ask("MPP goes global; The Full Story!; " + moreHeadlines);
+            break;
+        default:
+            ask("That is not a valid story! " + moreHeadlines);
+            break;
+    }
+}
+
+function Stop() {
+    tell("Faaaack off");
+}
+
+//SERVICE
 function ConfigAdhoc() {
     var https = require('https');
     // An object of options to indicate where to post to
@@ -199,13 +224,13 @@ function AuthenticateAccount(sessionToken) {
     post_req.end();
 }
 
-function AuthenticateSuccess(sessionToken) {
-    if(attributes.isPurchase) {
+function AuthenticateSuccess(sessionToken, accountId) {
+    if (attributes.isPurchase) {
         ProcessPayment(sessionToken);
-    }else{
-        VerifySession(sessionToken);
+    } else {
+        CheckAccountEntitlement(sessionToken, accountId);
     }
-    
+
 }
 
 function ProcessPayment(sessionToken) {
@@ -334,7 +359,12 @@ function CheckEntitlementSuccess(entitlements) {
         if (count === 0) {
             ask('You do not have any entitlements, would you like to buy this?');
         } else {
-            (count > 1)? ask('You have ' + count + ' entitlements') : ask('You have ' + count + ' entitlement');
+            entitlements.forEach(function (entitlement) {
+                if (entitlement.identifier === 'Pamplemousse Entitlement') {
+
+                }
+            }, this);
+            (count > 1) ? ask('You have ' + count + ' entitlements'): ask('You have ' + count + ' entitlement');
         }
     } else {
         ask('You do not have any entitlements, would you like to buy this?');
