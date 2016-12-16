@@ -53,7 +53,7 @@ exports.handler = function (event, context) {
                     attributes.readingStory = false;
                     GetHeadlines();
                 } else {
-                    ask('Would you like to make a single purchase, or purchase a subscription?');
+                    ask('Would you like to buy access for today for £0.50 or purchase a subscription for £4.99 per month?');
                 }
                 break;
             case 'AMAZON.NoIntent':
