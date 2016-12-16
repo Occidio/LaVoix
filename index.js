@@ -527,7 +527,7 @@ function CheckSubscriptionsSuccess(subscriptions) {
 
 // HELPER
 function parseSubscription(sub) {
-    tell('You own 1 subscription. Your subscription ${sub.title} cost you £'+sub.price+'. The next payment for '+sub.title+' is on '+date+'.');
+    tell('You own 1 subscription. Your subscription ${sub.title} cost you £'+sub.price+'. The next payment for '+sub.title+' is on '+sub.date+'.');
 }
 
 function tell(text) {
