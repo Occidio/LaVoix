@@ -78,7 +78,7 @@ exports.handler = function (event, context) {
 };
 
 function LaunchRequest() {
-    ask("I can give you the headlines or give you the status of your subscription; Which one would you like?");
+    ask("I can; give you the headlines, or give you the status of your subscription; Which one would you like?");
 }
 
 function GetHeadlines() {
@@ -127,10 +127,10 @@ function ReadFullStory() {
     attributes.readingStory = true;
     switch (attributes.headline) {
         case 1:
-            ask("Alexa integration. The Full Story!; " + moreHeadlines);
+            ask("The team in charge of developing a proof of concept for integration with Alexa has won first prize at this year's MPP Global hack project. The team will soon be showered with gifts; " + moreHeadlines);
             break;
         case 2:
-            ask("MPP goes global; The Full Story!; " + moreHeadlines);
+            ask("With offices across the world, localized websites, and easy integration with widelly used gadgets, MPP is on track to becoming the solution the world needs; " + moreHeadlines);
             break;
         default:
             ask("That is not a valid story! " + moreHeadlines);
@@ -139,7 +139,8 @@ function ReadFullStory() {
 }
 
 function Stop() {
-    tell("Faaaack off");
+    attributes.headline = 0;
+    tell("Fak off");
 }
 
 //SERVICE
