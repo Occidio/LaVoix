@@ -77,7 +77,7 @@ exports.handler = function (event, context) {
 
 function LaunchRequest() {
     attributes.headline = 0;
-    ask("Welcome to grapefruit news. I can, give you the headlines, or give you the status of your subscription; Which one would you like?");
+    ask("Welcome to grapefruit news. I can give you the headlines, or give you the status of your subscription; Which one would you like?");
 }
 
 function GetHeadlines() {
@@ -526,7 +526,7 @@ function CheckSubscriptionsSuccess(subscriptions) {
 
 // HELPER
 function parseSubscription(sub) {
-    tell('You own 1 subscription. Your subscription '+sub.title+' cost you £'+sub.price+'. The next payment for '+sub.title+' is on '+sub.nextPayment+'.');
+    tell('You own 1 subscription. '+sub.title+' costs £'+sub.price+' per month. The next payment is on '+sub.nextPayment+'.');
 }
 
 function tell(text) {
