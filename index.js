@@ -510,15 +510,21 @@ function CheckAccountSubscriptions(sessionToken, accountId) {
 }
 
 function CheckSubscriptionsSuccess(subscriptions) {
+    var isActive = subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.statusInfo.statusId == 2;
     if (subscriptions && subscriptions.length > 0) {
         var date = subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.nextPaymentDate;
         var sub = {
             title: subscriptions[0].defaultSubscriptionInfo.subscriptionTitle,
             price: subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.subscribedPrice,
             currency: subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.currency,
-            nextPayment: date.substring(0, 10)
+            nextPayment: date.substring(0, 10),
+            isActive: subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.statusInfo.statusId == 2
         }
-        parseSubscription(sub);
+        if(sub.isActive) {
+            parseSubscription(sub);
+        }else {
+            tell('You do not have any active subscriptions.');
+        }
     } else {
         tell('You do not have any subscriptions.');
     }
