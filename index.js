@@ -361,10 +361,11 @@ function CheckEntitlementSuccess(entitlements) {
         } else {
             entitlements.forEach(function (entitlement) {
                 if (entitlement.identifier === 'Pamplemousse Entitlement') {
-
+                    ReadFullStory();
+                    break;
                 }
             }, this);
-            (count > 1) ? ask('You have ' + count + ' entitlements'): ask('You have ' + count + ' entitlement');
+            ask('You have'+count+' entitlements, but none match this story; Would you like to buy this?');
         }
     } else {
         ask('You do not have any entitlements, would you like to buy this?');
