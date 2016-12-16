@@ -516,7 +516,6 @@ function CheckAccountSubscriptions(sessionToken, accountId) {
 }
 
 function CheckSubscriptionsSuccess(subscriptions) {
-    var isActive = subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.statusInfo.statusId == 2;
     if (subscriptions && subscriptions.length > 0) {
         var date = subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.nextPaymentDate;
         var sub = {
