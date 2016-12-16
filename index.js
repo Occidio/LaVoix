@@ -53,7 +53,7 @@ exports.handler = function (event, context) {
                     attributes.readingStory = false;
                     GetHeadlines();
                 } else {
-                    ask('You have two choises: single purchase, or purchase subscription');
+                    ask('Would you like to buy access for today for £0.50 or purchase a subscription for £4.99 per month?');
                 }
                 break;
             case 'AMAZON.NoIntent':
@@ -78,7 +78,8 @@ exports.handler = function (event, context) {
 };
 
 function LaunchRequest() {
-    ask("I can; give you the headlines, or give you the status of your subscription; Which one would you like?");
+    attributes.headline = 0;
+    ask("Welcome to grapefruit news. I can, give you the headlines, or give you the status of your subscription; Which one would you like?");
 }
 
 function GetHeadlines() {
@@ -123,15 +124,18 @@ function GetContent() {
     ConfigAdhoc();
 }
 
-function ReadFullStory() {
-    var moreHeadlines = 'Would you like another headline?'
+function ReadFullStory(justBought) {
+    var moreHeadlines = 'Would you like another headline?';
+    var purchaseSuccess = justBought ? 'Purchase successful; ' : "";
     attributes.readingStory = true;
     switch (attributes.headline) {
         case 1:
-            ask("The team in charge of developing a proof of concept for integration with Alexa has won first prize at this year's MPP Global hack project. The team will soon be showered with gifts; " + moreHeadlines);
+            var full1 = "The team in charge of developing a proof of concept for integration with Alexa has won first prize at this year's MPP Global hack project. The team will soon be showered with gifts and adoration from colleagues; ";
+            ask(purchaseSuccess + full1 + moreHeadlines);
             break;
         case 2:
-            ask("With offices across the world, localized websites, and easy integration with widelly used gadgets, MPP is on track to becoming the solution the world needs; " + moreHeadlines);
+            var full2 = "With offices across the world, localized websites, and easy integration with widelly used gadgets, MPP is on track to becoming the solution the world needs; ";
+            ask(purchaseSuccess + full2 + moreHeadlines);
             break;
         default:
             ask("That is not a valid story! " + moreHeadlines);
@@ -141,10 +145,16 @@ function ReadFullStory() {
 
 function Stop() {
     attributes.headline = 0;
-    tell("Fak off");
+    tell("Goodbye, we'll chat again soon. I will miss you.");
 }
 
-//SERVICE
+
+// -----------------------------------------
+//
+//              SERVICE
+//
+// -----------------------------------------
+
 function ConfigAdhoc() {
     var https = require('https');
     // An object of options to indicate where to post to
@@ -321,7 +331,7 @@ function ProcessPayment(sessionToken) {
 }
 
 function ProcessPaymentSuccess() {
-    tell('Purchase successful. Check e.H.Q.!');
+    ReadFullStory(true);
 }
 
 function ProcessAddSubscription(sessionToken) {
@@ -366,7 +376,7 @@ function ProcessAddSubscription(sessionToken) {
 }
 
 function AddSubscriptionSuccess() {
-    tell('Subscription added successfully. Check e.H.Q.!');
+    ReadFullStory(true);
 }
 
 function VerifySession(sessionToken) {
@@ -448,17 +458,17 @@ function CheckEntitlementSuccess(entitlements) {
     if (entitlements) {
         var count = entitlements.length;
         if (count === 0) {
-            ask('You do not have any entitlements, would you like to buy this?');
+            ask('You do not have an active subscription, would you like to buy access to this content?');
         } else {
             entitlements.forEach(function (entitlement) {
                 if (entitlement.identifier === 'Pamplemousse Entitlement') {
                     ReadFullStory();
                 }
             }, this);
-            ask('You have' + count + ' entitlements, but none match this story; Would you like to buy this?');
+            ask('You have '+count+' active subscriptions, but none match this story; Would you like to buy access to this content?');
         }
     } else {
-        ask('You do not have any entitlements, would you like to buy this?');
+        ask('You do not have an active subscription, would you like to buy access to this content?');
     }
 }
 
