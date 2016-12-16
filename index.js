@@ -512,12 +512,11 @@ function CheckAccountSubscriptions(sessionToken, accountId) {
 function CheckSubscriptionsSuccess(subscriptions) {
     if (subscriptions && subscriptions.length > 0) {
         var date = subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.nextPaymentDate;
-        date.substring(0, 10);
         var sub = {
             title: subscriptions[0].defaultSubscriptionInfo.subscriptionTitle,
             price: subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.subscribedPrice,
             currency: subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.currency,
-            nextPayment: date
+            nextPayment: date.substring(0, 10)
         }
         parseSubscription(sub);
     } else {
@@ -527,7 +526,7 @@ function CheckSubscriptionsSuccess(subscriptions) {
 
 // HELPER
 function parseSubscription(sub) {
-    tell('You own 1 subscription. Your subscription ${sub.title} cost you £'+sub.price+'. The next payment for '+sub.title+' is on '+sub.date+'.');
+    tell('You own 1 subscription. Your subscription '+sub.title+' cost you £'+sub.price+'. The next payment for '+sub.title+' is on '+sub.nextPayment+'.');
 }
 
 function tell(text) {
