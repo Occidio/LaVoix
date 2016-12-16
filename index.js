@@ -60,10 +60,10 @@ exports.handler = function (event, context) {
                 if (attributes.readingHeadlines) {
                     attributes.readingHeadlines = false;
                     GetHeadlines();
-                } else if (attributes.readingStory){
+                } else if (attributes.readingStory) {
                     attributes.readingStory = false;
                     Stop();
-                }else{
+                } else {
                     LaunchRequest();
                 }
                 break;
@@ -114,7 +114,8 @@ function SubscriptionPurchase() {
 }
 
 function SubscriptionInfo() {
-    tell("Not implemented yet");
+    attributes.purchaseFunction = 'subscriptionInfo';
+    AuthenticateAccount('');
 }
 
 function GetContent() {
@@ -272,8 +273,10 @@ function AuthenticateAccount(sessionToken) {
 function AuthenticateSuccess(sessionToken, accountId) {
     if (attributes.purchaseFunction === 'purchase') {
         ProcessPayment(sessionToken);
-    }else if(attributes.purchaseFunction === 'subscription') {
+    } else if (attributes.purchaseFunction === 'subscription') {
         ProcessAddSubscription(sessionToken);
+    } else if (attributes.purchaseFunction === 'subscriptionInfo') {
+        CheckAccountSubscriptions(sessionToken, accountId);
     } else {
         CheckAccountEntitlement(sessionToken, accountId);
     }
@@ -452,11 +455,70 @@ function CheckEntitlementSuccess(entitlements) {
                     ReadFullStory();
                 }
             }, this);
-            ask('You have'+count+' entitlements, but none match this story; Would you like to buy this?');
+            ask('You have' + count + ' entitlements, but none match this story; Would you like to buy this?');
         }
     } else {
         ask('You do not have any entitlements, would you like to buy this?');
     }
+}
+
+function CheckAccountSubscriptions(sessionToken, accountId) {
+    var https = require('https');
+
+    // An object of options to indicate where to post to
+    var post_options = {
+        host: 'uat.mppglobal.com',
+        port: '443',
+        path: '/api/accounts/' + accountId + '/subscriptions',
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'https://skinsuat.mppglobal.com',
+            'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
+            'X-Version': '1.0.0',
+            'X-SessionId': '' + sessionToken
+        }
+    };
+
+    callback = function (response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            var data = JSON.parse(str);
+            var subscriptions = data.subscriptions;
+            CheckSubscriptionsSuccess(subscriptions);
+        });
+    };
+
+    // Set up the request
+    var post_req = https.request(post_options, callback);
+
+    post_req.end();
+}
+
+function CheckSubscriptionsSuccess(subscriptions) {
+    if (subscriptions && subscriptions.length > 0) {
+        var date = subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.nextPaymentDate;
+        date.substring(0, 10);
+        var sub = {
+            title: subscriptions[0].defaultSubscriptionInfo.subscriptionTitle,
+            price: subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.subscribedPrice,
+            currency: subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.currency,
+            nextPayment: date
+        }
+        parseSubscription(sub);
+    } else {
+        tell('You do not have any subscriptions.');
+    }
+}
+
+// HELPER
+function parseSubscription(sub) {
+    tell('You own 1 subscription. Your subscription ${sub.title} cost you £'+sub.price+'. The next payment for '+sub.title+' is on '+date+'.');
 }
 
 function tell(text) {
