@@ -83,13 +83,13 @@ function LaunchRequest() {
 function GetHeadlines() {
     attributes.purchaseFunction = null;
     attributes.readingHeadlines = true;
-    if (attributes.headline == NUMBER_OF_HEADLINES) {
+    if (attributes.headline === NUMBER_OF_HEADLINES) {
         attributes.headline = 0;
     } else {
         attributes.headline = attributes.headline + 1;
     }
     var more = "Would you like to know more?";
-    var startInfo = attributes.headline == 1 ? "Here are your headlines. " : "";
+    var startInfo = attributes.headline === 1 ? "Here are your headlines. " : "";
     switch (attributes.headline) {
         case 1:
             ask(startInfo + "Alexa integration proof of concept wins MPP Global hack; " + more);
@@ -104,14 +104,14 @@ function GetHeadlines() {
 }
 
 function SinglePurchase() {
-    if(attributes.headline == 0)
+    if(attributes.headline === 0)
         LaunchRequest();
     attributes.purchaseFunction = 'purchase';
     ConfigAdhoc();
 }
 
 function SubscriptionPurchase() {
-    if(attributes.headline == 0)
+    if(attributes.headline === 0)
         LaunchRequest();
     attributes.purchaseFunction = 'subscription';
     ConfigSubscription();
@@ -123,7 +123,7 @@ function SubscriptionInfo() {
 }
 
 function GetContent() {
-    if(attributes.headline == 0)
+    if(attributes.headline === 0)
         LaunchRequest();
     attributes.isPurchase = false;
     ConfigAdhoc();
