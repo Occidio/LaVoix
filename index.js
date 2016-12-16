@@ -40,8 +40,6 @@ exports.handler = function (event, context) {
                     attributes.readingHeadlines = false;
                     switch (attributes.headline) {
                         case 1:
-                            GetContent();
-                            break;
                         case 2:
                             GetContent();
                             break;
@@ -53,7 +51,7 @@ exports.handler = function (event, context) {
                     attributes.readingStory = false;
                     GetHeadlines();
                 } else {
-                    ask('Would you like to buy access for today for £0.50 or purchase a subscription for £4.99 per month?');
+                    ask('Would you like to buy access for today for £0.50 or buy a subscription for £4.99 per month?');
                 }
                 break;
             case 'AMAZON.NoIntent':
@@ -90,13 +88,14 @@ function GetHeadlines() {
     } else {
         attributes.headline = attributes.headline + 1;
     }
-    var more = "Would you like to know more?"
+    var more = "Would you like to know more?";
+    var startInfo = attributes.headline == 1 ? "Here are your headlines. " : "";
     switch (attributes.headline) {
         case 1:
-            ask("Alexa integration proof of concept wins MPP Global hack; " + more);
+            ask(startInfo + "Alexa integration proof of concept wins MPP Global hack; " + more);
             break;
         case 2:
-            ask("MPP goes global; " + more);
+            ask(startInfo + "MPP goes global; " + more);
             break;
         default:
             ask("There are no more headlines; Would you like to start again?");

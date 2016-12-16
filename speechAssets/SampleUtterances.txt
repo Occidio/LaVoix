@@ -7,7 +7,8 @@ GetContentIntent read me the article
 GetContentIntent give me the article
 GetContentIntent tell me more
 
-SubscriptionPurchaseIntent subscription 
+SubscriptionPurchaseIntent buy subscription
+SubscriptionPurchaseIntent buy a subscription
 SubscriptionPurchaseIntent purchase subscription
 SubscriptionPurchaseIntent purchase a subscription
 
@@ -21,3 +22,12 @@ SubscriptionInfoIntent what's the status of my subscription
 SubscriptionInfoIntent how's my subscription
 SubscriptionInfoIntent check my subscription
 SubscriptionInfoIntent subscription status
+SubscriptionInfoIntent subscription
+SubscriptionInfoIntent status of subscription
+SubscriptionInfoIntent status of my subscription
+SubscriptionInfoIntent give me the status of my subscription
+
+AMAZON.YesIntent yeah
+AMAZON.YesIntent sure
+
+AMAZON.NoIntent nope
