@@ -3,7 +3,7 @@ var attributes = {
     readingHeadlines: false,
     headline: 0,
     context: null,
-    isPurchase: false,
+    purchaseFunction: null,
     readingStory: false
 };
 
@@ -103,7 +103,7 @@ function GetHeadlines() {
 }
 
 function SinglePurchase() {
-    attributes.isPurchase = true;
+    attributes.purchaseFunction = 'purchase';
     ConfigAdhoc();
 }
 
@@ -167,7 +167,7 @@ function ConfigAdhoc() {
         });
 
         response.on('end', function () {
-            ConfigSuccess(JSON.parse(str).sessionToken);
+            ConfigAdhocSuccess(JSON.parse(str).sessionToken);
         });
     };
 
@@ -179,7 +179,50 @@ function ConfigAdhoc() {
     post_req.end();
 }
 
-function ConfigSuccess(sessionToken) {
+function ConfigAdhocSuccess(sessionToken) {
+    AuthenticateAccount(sessionToken);
+}
+
+function ConfigSubscription() {
+    var https = require('https');
+    // An object of options to indicate where to post to
+    var post_options = {
+        host: 'uat.mppglobal.com',
+        port: '443',
+        path: '/api/workflows/configurations/subscriptions',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Version': '1.0.0',
+            'X-ClientId': '433',
+            'X-ClientPassword': 'Km25Acr9GRo3b4'
+        }
+    };
+
+    var post_data = '{"WorkFlowConfiguration": {"subscriptionId": 15472,"pricing": {"priceId": 17715,"paymentMethod": "CreditCard","currency": "GBP","price": 0},"returnUrl": "https://google.com","disable3DSecure": false,"settlementType": "NextAvailable"}}';
+
+    callback = function (response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            ConfigSubscriptionSuccess(JSON.parse(str).sessionToken);
+        });
+    };
+
+    // Set up the request
+    var post_req = https.request(post_options, callback);
+
+    // post the data
+    post_req.write(post_data);
+    post_req.end();
+}
+
+function ConfigSubscriptionSuccess(sessionToken) {
+    attributes.purchaseFunction = 'subscription';
     AuthenticateAccount(sessionToken);
 }
 
@@ -225,12 +268,13 @@ function AuthenticateAccount(sessionToken) {
 }
 
 function AuthenticateSuccess(sessionToken, accountId) {
-    if (attributes.isPurchase) {
+    if (attributes.purchaseFunction === 'purchase') {
         ProcessPayment(sessionToken);
+    }else if(attributes.purchaseFunction === 'subscription') {
+        
     } else {
         CheckAccountEntitlement(sessionToken, accountId);
     }
-
 }
 
 function ProcessPayment(sessionToken) {
@@ -259,9 +303,6 @@ function ProcessPayment(sessionToken) {
         });
 
         response.on('end', function () {
-            var data = JSON.parse(str);
-            var sessionToken = data.sessionToken;
-            var accountId = data.accountId;
             ProcessPaymentSuccess();
         });
     };
@@ -276,6 +317,51 @@ function ProcessPayment(sessionToken) {
 
 function ProcessPaymentSuccess() {
     tell('Purchase successful. Check e.H.Q.!');
+}
+
+function ProcessAddSubscription(sessionToken) {
+    var https = require('https');
+    // An object of options to indicate where to post to
+    var post_options = {
+        host: 'uat.mppglobal.com',
+        port: '443',
+        path: '/api/workflows/purchases/subscriptions',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Origin': 'https://skinsuat.mppglobal.com',
+            'X-TokenId': '9E9F3BEF7D814538AB75AD43CC6D651B',
+            'X-Version': '1.0.0',
+            'X-SessionId': '' + sessionToken
+        }
+    };
+
+    var post_data = '{"cvv": "123","paymentMethod": "CreditCard"}';
+    callback = function (response) {
+        var str = '';
+
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            var data = JSON.parse(str);
+            var sessionToken = data.sessionToken;
+            var accountId = data.accountId;
+            AddSubscriptionSuccess();
+        });
+    };
+
+    // Set up the request
+    var post_req = https.request(post_options, callback);
+
+    // post the data
+    post_req.write(post_data);
+    post_req.end();
+}
+
+function AddSubscriptionSuccess() {
+    tell('Subscription added successfully. Check e.H.Q.!');
 }
 
 function VerifySession(sessionToken) {
