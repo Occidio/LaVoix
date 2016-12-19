@@ -131,7 +131,7 @@ function SubscriptionInfo() {
 function GetContent() {
     if(attributes.headline === 0)
         LaunchRequest();
-    attributes.isPurchase = false;
+    attributes.purchaseFunction = null;
     ConfigAdhoc();
 }
 
