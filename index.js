@@ -543,9 +543,50 @@ function CheckSubscriptionsSuccess(subscriptions) {
     }
 }
 
+function PostArticleToFacebook(article) {
+    var message = '' + article + timestamp();
+    var options = {
+        "method": "POST",
+        "hostname": "graph.facebook.com",
+        "port": null,
+        "path": "/me/feed?message=" + message + "&access_token=EAARUdAzQ9UABAKWXIx0MA9eiXH0l4ynBmucc4MQYuitfR0s13BY6ioiUHJiszyjMW5t7S1o01JZBr4sdZA9gngT5QGqqdvt8XWOPD9U0dqVv7Q97J6NVnRCua8POeQfPypwa8TPvrx4wEZAENpGdRrZBgKf9O2Q77ckky63nfJ1EE1QwXoQY",
+        "headers": {
+            "cache-control": "no-cache"
+        }
+    };
+
+    console.log(options);
+    var req = https.request(options, function (res) {
+        var chunks = [];
+
+        res.on("data", function (chunk) {
+            chunks.push(chunk);
+        });
+
+        res.on("end", function () {
+            var body = Buffer.concat(chunks);
+            console.log(body.toString());
+        });
+    });
+
+    req.end();
+}
+
 // HELPER
 function parseSubscription(sub) {
     tell('You own 1 subscription. '+sub.title+' costs £'+sub.price+' per month. The next payment is on '+sub.nextPayment+'.');
+}
+
+var timestamp = function () {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    var hh = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+
+    return '' + yyyy + mm + dd + '_' + hh + m + s;
 }
 
 function tell(text) {
