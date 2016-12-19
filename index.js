@@ -580,7 +580,7 @@ function PostArticleToFacebook(article) {
     var message = '' + article + ' . ' + timestamp();
     var queryStringObj = {
         'message': message,
-        'access_token': 'EAARUdAzQ9UABAHyY1cWaVCZCKWjq39g0CLyRZC7sYZAAX93A9Fs8r8VXbSy96g2U600UDUiS2zkwwaaXXobb6ve24e8RBDC2JZBZBCnD804qDN3fZCgeZCew5GGOwQg8inwsYi9puXDDtN47SidSvCg7RGQFkDUMaTnv91cdlgMZAsjBrlXgZALLa'
+        'access_token': 'EAARUdAzQ9UABALNp2sjZBZAFZBZBg2ZCZAaBIeHumkZBsqdFu1fzOqmfMoBjISn3EYZCsqJ00qgM0RUtVLe6ZAKCKZAaGTxywkaiGIcJhUDtxMIYZAERdSK0RP39ZAAdDjWErxyWNPZBey9YC9SF4WKcsm9Pu9cilip4xSx713RKCiNuO7Hs13oKM6KZBr'
     }
     var safeQuaryString = querystring.stringify(queryStringObj);
 
