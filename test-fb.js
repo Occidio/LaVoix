@@ -136,7 +136,6 @@ var FB_postToFeed2 = function (userId, access_token, message) {
     post_req.end();
 };
 
-
 var testFromPostMan = function () {
     var testMessage = 'TestMessage' + timestamp();
     var options = {
@@ -167,22 +166,15 @@ var testFromPostMan = function () {
 };
 
 var timestamp = function () {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1; //January is 0!
-        var yyyy = today.getFullYear();
-        var hh = today.getHours();
-        var m = today.getMinutes();
-        var s = today.getSeconds();
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    var hh = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
 
-        return '' + yyyy + mm + dd + '_' + hh + m + s;
-    }
-    //  /{user-id}/feed
+    return '' + yyyy + mm + dd + '_' + hh + m + s;
+}
 
-
-// var userToken = 'EAARUdAzQ9UABAEQHkzYFYxtNYk0nyTBnB9zUVtN6cbeqcCcXZCU1SMiOpFca1fLCeJn9hJuGnZCqT9X0NV9kj0JILEeZAZAZCwTIN74IHIEeOvZBIGPKqZA33BU2JCSig4x4A6A7ZC5MaCiQXmVQx6dLjZB6ozOfq6tXmj008cjgSRmE8XycPg8nI';
-// callFB(userToken);
-
-//FB_postToFeed2(FB_USER_ID, FB_ACCESS_TOKEN_POST_ACTION, "TEST POST TO FB FROM NODE");
-//FB_oauth();
 testFromPostMan();
