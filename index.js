@@ -34,6 +34,7 @@ exports.handler = function (event, context) {
             case 'testPostToSocial':
                 attributes.headline = 1;
                 PostToSocial();
+                break;
             case 'SubscriptionIntent':
                 if (attributes.purchasing === 1) {
                     attributes.purchasing = 0;
@@ -177,7 +178,7 @@ function PostToSocial() {
             break;
         case 2:
             var full2 = "With offices across the world, localized websites, and easy integration with widelly used gadgets, MPP is on track to becoming the solution the world needs; ";
-            PostArticleToFacebook(feill2 + postedByMppFromAlexa);
+            PostArticleToFacebook(full2 + postedByMppFromAlexa);
             break;
         default:
             ask("That is not a valid story! " + moreHeadlines);
