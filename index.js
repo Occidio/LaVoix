@@ -16,7 +16,7 @@ exports.handler = function (event, context) {
                 LaunchRequest();
                 break;
             default:
-                tell('WTF you talking about. This is not an intent.');
+                tell("I'm sorry. I did not understand that.");
                 break;
         }
     } else {
@@ -73,7 +73,7 @@ exports.handler = function (event, context) {
                 Stop();
                 break;
             default:
-                tell('WTF you talking about. This is an intent.');
+                tell("I'm sorry. I did not understand that.");
                 break;
         }
     }
