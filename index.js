@@ -5,7 +5,8 @@ var attributes = {
     context: null,
     purchasing: 0,
     purchaseFunction: null,
-    readingStory: false
+    readingStory: false,
+    postToSocial: false
 };
 
 exports.handler = function (event, context) {
@@ -30,12 +31,15 @@ exports.handler = function (event, context) {
             case 'SinglePurchaseIntent':
                 SinglePurchase();
                 break;
+            case 'testPostToSocial':
+                attributes.headline = 1;
+                PostToSocial();
+                break;
             case 'SubscriptionIntent':
-                if(attributes.purchasing === 1){
+                if (attributes.purchasing === 1) {
                     attributes.purchasing = 0;
                     SubscriptionPurchase();
-                }
-                else {
+                } else {
                     SubscriptionInfo();
                 }
                 break;
@@ -53,6 +57,9 @@ exports.handler = function (event, context) {
                     }
                 } else if (attributes.readingStory) {
                     attributes.readingStory = false;
+                    PostToSocial();
+                } else if (attributes.postToSocial) {
+                    attributes.postToSocial = false;
                     GetHeadlines();
                 } else {
                     ask('Would you like to buy access for today for £0.50 or buy a subscription for £4.99 per month?');
@@ -82,6 +89,7 @@ exports.handler = function (event, context) {
 function LaunchRequest() {
     attributes.headline = 0;
     attributes.purchasing = 0;
+    attributes.readingStory = false;
     ask("Welcome to grapefruit news. I can give you the headlines, or give you the status of your subscription; Which one would you like?");
 }
 
@@ -110,14 +118,14 @@ function GetHeadlines() {
 }
 
 function SinglePurchase() {
-    if(attributes.headline === 0)
+    if (attributes.headline === 0)
         LaunchRequest();
     attributes.purchaseFunction = 'purchase';
     ConfigAdhoc();
 }
 
 function SubscriptionPurchase() {
-    if(attributes.headline === 0)
+    if (attributes.headline === 0)
         LaunchRequest();
     attributes.purchaseFunction = 'subscription';
     ConfigSubscription();
@@ -129,7 +137,7 @@ function SubscriptionInfo() {
 }
 
 function GetContent() {
-    if(attributes.headline === 0)
+    if (attributes.headline === 0)
         LaunchRequest();
     attributes.purchaseFunction = null;
     ConfigAdhoc();
@@ -137,16 +145,17 @@ function GetContent() {
 
 function ReadFullStory(justBought) {
     var moreHeadlines = 'Would you like another headline?';
+    var postToFacebook = 'Would you like to post this story to Facebook?';
     var purchaseSuccess = justBought ? 'Purchase successful; Here is your content: ' : "";
     attributes.readingStory = true;
     switch (attributes.headline) {
         case 1:
             var full1 = "The team in charge of developing a proof of concept for integration with Alexa has won first prize at this year's MPP Global hack project. The team will soon be showered with gifts and adoration from colleagues; ";
-            ask(purchaseSuccess + full1 + moreHeadlines);
+            ask(purchaseSuccess + full1 + postToFacebook);
             break;
         case 2:
             var full2 = "With offices across the world, localized websites, and easy integration with widelly used gadgets, MPP is on track to becoming the solution the world needs; ";
-            ask(purchaseSuccess + full2 + moreHeadlines);
+            ask(purchaseSuccess + full2 + postToFacebook);
             break;
         default:
             ask("That is not a valid story! " + moreHeadlines);
@@ -157,6 +166,25 @@ function ReadFullStory(justBought) {
 function Stop() {
     attributes.headline = 0;
     tell("Goodbye, we'll chat again soon.");
+}
+
+function PostToSocial() {
+    attributes.postToSocial = true;
+    var moreHeadlines = 'Would you like another headline?';
+    var postedByMppFromAlexa = 'This news article was posted by MPP Global from Alexa!'
+    switch (attributes.headline) {
+        case 1:
+            var full1 = "The team in charge of developing a proof of concept for integration with Alexa has won first prize at this year's MPP Global hack project. The team will soon be showered with gifts and adoration from colleagues; ";
+            PostArticleToFacebook(full1 + postedByMppFromAlexa);
+            break;
+        case 2:
+            var full2 = "With offices across the world, localized websites, and easy integration with widelly used gadgets, MPP is on track to becoming the solution the world needs; ";
+            PostArticleToFacebook(full2 + postedByMppFromAlexa);
+            break;
+        default:
+            ask("That is not a valid story! " + moreHeadlines);
+            break;
+    }
 }
 
 
@@ -293,10 +321,13 @@ function AuthenticateAccount(sessionToken) {
 
 function AuthenticateSuccess(sessionToken, accountId) {
     if (attributes.purchaseFunction === 'purchase') {
+        attributes.purchaseFunction = null;
         ProcessPayment(sessionToken);
     } else if (attributes.purchaseFunction === 'subscription') {
+        attributes.purchaseFunction = null;
         ProcessAddSubscription(sessionToken);
     } else if (attributes.purchaseFunction === 'subscriptionInfo') {
+        attributes.purchaseFunction = null;
         CheckAccountSubscriptions(sessionToken, accountId);
     } else {
         CheckAccountEntitlement(sessionToken, accountId);
@@ -478,7 +509,7 @@ function CheckEntitlementSuccess(entitlements) {
                     ReadFullStory();
                 }
             }, this);
-            ask('You have '+count+' active subscriptions, but none match this story; Would you like to buy access to this content?');
+            ask('You have ' + count + ' active subscriptions, but none match this story; Would you like to buy access to this content?');
         }
     } else {
         ask('You do not have an active subscription, would you like to buy access to this content?');
@@ -533,9 +564,9 @@ function CheckSubscriptionsSuccess(subscriptions) {
             nextPayment: date.substring(0, 10),
             isActive: subscriptions[0].accountSubscriptionInfo.recurringPaymentInfo.statusInfo.statusId == 2
         }
-        if(sub.isActive) {
+        if (sub.isActive) {
             parseSubscription(sub);
-        }else {
+        } else {
             tell('You do not have any active subscriptions.');
         }
     } else {
@@ -543,9 +574,61 @@ function CheckSubscriptionsSuccess(subscriptions) {
     }
 }
 
+function PostArticleToFacebook(article) {
+    var https = require('https');
+    var querystring = require('querystring');
+
+    var message = '' + article + ' . ' + timestamp();
+    var queryStringObj = {
+        'message': message,
+        'access_token': 'EAARUdAzQ9UABALNp2sjZBZAFZBZBg2ZCZAaBIeHumkZBsqdFu1fzOqmfMoBjISn3EYZCsqJ00qgM0RUtVLe6ZAKCKZAaGTxywkaiGIcJhUDtxMIYZAERdSK0RP39ZAAdDjWErxyWNPZBey9YC9SF4WKcsm9Pu9cilip4xSx713RKCiNuO7Hs13oKM6KZBr'
+    }
+    var safeQuaryString = querystring.stringify(queryStringObj);
+
+    var options = {
+        "method": 'POST',
+        "hostname": 'graph.facebook.com',
+        "port": null,
+        "path": '/me/feed?' + safeQuaryString
+    };
+
+    console.log(options);
+    var req = https.request(options, function (res) {
+        var chunks = [];
+
+        res.on("data", function (chunk) {
+            chunks.push(chunk);
+        });
+
+        res.on("end", function () {
+            var body = Buffer.concat(chunks);
+            console.log(body.toString());
+            PostToSocialSuccess();
+        });
+    });
+
+    req.end();
+}
+
+function PostToSocialSuccess() {
+    ask('Your article has been shared to Facebook! Would you like another headline? ');
+}
+
 // HELPER
 function parseSubscription(sub) {
-    tell('You own 1 subscription. '+sub.title+' costs £'+sub.price+' per month. The next payment is on '+sub.nextPayment+'.');
+    tell('You own 1 subscription. ' + sub.title + ' costs £' + sub.price + ' per month. The next payment is on ' + sub.nextPayment + '.');
+}
+
+var timestamp = function () {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    var hh = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+
+    return '' + yyyy + mm + dd + '_' + hh + m + s;
 }
 
 function tell(text) {

@@ -1,4 +1,6 @@
 var https = require('https');
+var querystring = require('querystring');
+
 var FB_APP_ID = '1218757314803008';
 var FB_APP_SECRET = '87b220f191da2b0589c7c001398dcb8f';
 var FB_USER_ID = '100012931541050';
@@ -137,12 +139,19 @@ var FB_postToFeed2 = function (userId, access_token, message) {
 };
 
 var testFromPostMan = function () {
-    var testMessage = 'TestMessage' + timestamp();
+    var testMessage = 'Test Message one two three it\'s' + timestamp();
+    var queryStringObj = {
+        'message': testMessage,
+        'access_token': 'EAARUdAzQ9UABAKWXIx0MA9eiXH0l4ynBmucc4MQYuitfR0s13BY6ioiUHJiszyjMW5t7S1o01JZBr4sdZA9gngT5QGqqdvt8XWOPD9U0dqVv7Q97J6NVnRCua8POeQfPypwa8TPvrx4wEZAENpGdRrZBgKf9O2Q77ckky63nfJ1EE1QwXoQY'
+    }
+
+    var querystr = querystring.stringify(queryStringObj);
+
     var options = {
         "method": "POST",
         "hostname": "graph.facebook.com",
         "port": null,
-        "path": "/me/feed?message=" + testMessage + "&access_token=EAARUdAzQ9UABAKWXIx0MA9eiXH0l4ynBmucc4MQYuitfR0s13BY6ioiUHJiszyjMW5t7S1o01JZBr4sdZA9gngT5QGqqdvt8XWOPD9U0dqVv7Q97J6NVnRCua8POeQfPypwa8TPvrx4wEZAENpGdRrZBgKf9O2Q77ckky63nfJ1EE1QwXoQY",
+        "path": "/me/feed?message=" + querystr,
         "headers": {
             "cache-control": "no-cache"
         }
