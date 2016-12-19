@@ -6,7 +6,7 @@ var attributes = {
     purchasing: 0,
     purchaseFunction: null,
     readingStory: false,
-    postToSocial: true
+    postToSocial: false
 };
 
 exports.handler = function (event, context) {
@@ -89,6 +89,7 @@ exports.handler = function (event, context) {
 function LaunchRequest() {
     attributes.headline = 0;
     attributes.purchasing = 0;
+    attributes.readingStory = false;
     ask("Welcome to grapefruit news. I can give you the headlines, or give you the status of your subscription; Which one would you like?");
 }
 
