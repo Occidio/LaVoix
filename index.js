@@ -316,10 +316,13 @@ function AuthenticateAccount(sessionToken) {
 
 function AuthenticateSuccess(sessionToken, accountId) {
     if (attributes.purchaseFunction === 'purchase') {
+        attributes.purchaseFunction = null;
         ProcessPayment(sessionToken);
     } else if (attributes.purchaseFunction === 'subscription') {
+        attributes.purchaseFunction = null;
         ProcessAddSubscription(sessionToken);
     } else if (attributes.purchaseFunction === 'subscriptionInfo') {
+        attributes.purchaseFunction = null;
         CheckAccountSubscriptions(sessionToken, accountId);
     } else {
         CheckAccountEntitlement(sessionToken, accountId);
