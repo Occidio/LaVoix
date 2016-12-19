@@ -574,16 +574,20 @@ function CheckSubscriptionsSuccess(subscriptions) {
 
 function PostArticleToFacebook(article) {
     var https = require('https');
+    var querystring = require('querystring');
 
     var message = '' + article + ' . ' + timestamp();
+    var queryStringObj = {
+        'message': message,
+        'access_token': 'EAARUdAzQ9UABAKWXIx0MA9eiXH0l4ynBmucc4MQYuitfR0s13BY6ioiUHJiszyjMW5t7S1o01JZBr4sdZA9gngT5QGqqdvt8XWOPD9U0dqVv7Q97J6NVnRCua8POeQfPypwa8TPvrx4wEZAENpGdRrZBgKf9O2Q77ckky63nfJ1EE1QwXoQY'
+    }
+    var safeQuaryString = querystring.stringify(queryStringObj);
+
     var options = {
-        "method": "POST",
-        "hostname": "graph.facebook.com",
+        "method": 'POST',
+        "hostname": 'graph.facebook.com',
         "port": null,
-        "path": "/me/feed?message=" + 'message' + "&access_token=EAARUdAzQ9UABAKWXIx0MA9eiXH0l4ynBmucc4MQYuitfR0s13BY6ioiUHJiszyjMW5t7S1o01JZBr4sdZA9gngT5QGqqdvt8XWOPD9U0dqVv7Q97J6NVnRCua8POeQfPypwa8TPvrx4wEZAENpGdRrZBgKf9O2Q77ckky63nfJ1EE1QwXoQY",
-        "headers": {
-            "cache-control": "no-cache"
-        }
+        "path": '/me/feed?' + safeQuaryString
     };
 
     console.log(options);
